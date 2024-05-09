@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
-import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
-import { Line2 } from "three/examples/jsm/lines/Line2";
+// import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
+// import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
+// import { Line2 } from "three/examples/jsm/lines/Line2";
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const urls = [
@@ -40,7 +40,7 @@ for (let i = 0; i < 1000; i++) {
     const smallStar = new THREE.Mesh(smallStarGeometry, whiteMaterial);
     const box_geometry = new THREE.BoxGeometry(2.03, 2.03, 2.03);
     const box = new THREE.Mesh(box_geometry, blackMaterial);
-    // znalazłem sposób na internecie jak zrobić fajnie linie i faktycznie to są linie
+
     const frameGeometry = new THREE.BoxGeometry(2, 2, 2);
     const frameEdges = new THREE.EdgesGeometry(frameGeometry);
     const frameLines = new THREE.LineSegments(frameEdges, whiteMaterial);
@@ -68,19 +68,6 @@ for (let i = 0; i < 1000; i++) {
 
 const assetLoader = new GLTFLoader();
 const models = [];
-let allPoints = [];
-let line, outlineGeometry;
-const matLine = new LineMaterial( {
-
-    color: 0xffffff,
-    linewidth: 5, // in world units with size attenuation, pixels otherwise
-    vertexColors: true,
-
-    //resolution:  // to be set by renderer, eventually
-    dashed: false,
-    alphaToCoverage: true,
-
-} );
 
 function loadModelsSequentially(index) {
     if (index >= urls.length) {
