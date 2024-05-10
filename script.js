@@ -587,70 +587,70 @@ function scrollButton(id) {
 }
 
 const video = document.getElementById('videoPlayer');
-// const play = document.getElementById('playButton');
-// const pause = document.getElementById('pauseButton');
-// const on = document.getElementById('onButton');
-// const off = document.getElementById('offButton');
-// const videos = [
-//   'assets/videos/1.mp4',
-//   'assets/videos/2.mp4',
-//   'assets/videos/3.mov',
-//   'assets/videos/4.mov',
-//   'assets/videos/5.mov',
-//   'assets/videos/6.mov',
-//   'assets/videos/7.mov',
-//   'assets/videos/8.mov',
-//   'assets/videos/9.mov',
-//   'assets/videos/10.mov',
-//   'assets/videos/11.mov',
-//   'assets/videos/12.mp4',
-// ];
+const play = document.getElementById('playButton');
+const pause = document.getElementById('pauseButton');
+const on = document.getElementById('onButton');
+const off = document.getElementById('offButton');
+const videos = [
+  'assets/videos/1.mp4',
+  'assets/videos/2.mp4',
+  'assets/videos/3.mov',
+  'assets/videos/4.mov',
+  'assets/videos/5.mov',
+  'assets/videos/6.mov',
+  'assets/videos/7.mov',
+  'assets/videos/8.mov',
+  'assets/videos/9.mov',
+  'assets/videos/10.mov',
+  'assets/videos/11.mov',
+  'assets/videos/12.mp4',
+];
 
-// function togglePlayPause() {
-//     if (video.paused) {
-//         video.play();
-//         play.classList.remove('hiddenButton');
-//         pause.classList.add('hiddenButton');
-//     } else {
-//         video.pause();
-//         pause.classList.remove('hiddenButton');
-//         play.classList.add('hiddenButton');
-//     }
-// }
+function togglePlayPause() {
+    if (video.paused) {
+        video.play();
+        play.classList.remove('hiddenButton');
+        pause.classList.add('hiddenButton');
+    } else {
+        video.pause();
+        pause.classList.remove('hiddenButton');
+        play.classList.add('hiddenButton');
+    }
+}
 
-// function pauseVideo() {
-//     video.pause();
-//     pause.classList.remove('hiddenButton');
-//     play.classList.add('hiddenButton');
-// }
+function pauseVideo() {
+    video.pause();
+    pause.classList.remove('hiddenButton');
+    play.classList.add('hiddenButton');
+}
 
-// var lastVideoIndex = -1;
+var lastVideoIndex = -1;
 
-// function changeVideo() {
-//   var randomIndex;
-//     do {
-//         randomIndex = Math.floor(Math.random() * videos.length);
-//     } while (randomIndex === lastVideoIndex);
+function changeVideo() {
+  var randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * videos.length);
+    } while (randomIndex === lastVideoIndex);
 
-//     lastVideoIndex = randomIndex;
-//     video.src = videos[randomIndex];
-//     video.load();
-//     video.play();
-// }
+    lastVideoIndex = randomIndex;
+    video.src = videos[randomIndex];
+    video.load();
+    video.play();
+}
 
-// function toggleMute() {
-//     if (video.muted) {
-//         on.classList.remove('hiddenButton');
-//         off.classList.add('hiddenButton');
-//     } else {
-//         off.classList.remove('hiddenButton');
-//         on.classList.add('hiddenButton');
-//     }
-//     video.muted = !video.muted;
-// }
+function toggleMute() {
+    if (video.muted) {
+        on.classList.remove('hiddenButton');
+        off.classList.add('hiddenButton');
+    } else {
+        off.classList.remove('hiddenButton');
+        on.classList.add('hiddenButton');
+    }
+    video.muted = !video.muted;
+}
         
-// changeVideo();
-// togglePlayPause();
+changeVideo();
+togglePlayPause();
 
 function getRect(e) {
     return e.getBoundingClientRect();

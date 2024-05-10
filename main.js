@@ -5,6 +5,19 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import { Line2 } from "three/examples/jsm/lines/Line2";
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+import videoSrc1 from './assets/1.mp4';
+import videoSrc2 from './assets/2.mp4';
+import videoSrc3 from './assets/3.mov';
+import videoSrc4 from './assets/4.mov';
+import videoSrc5 from './assets/5.mov';
+import videoSrc6 from './assets/6.mov';
+import videoSrc7 from './assets/7.mov';
+import videoSrc8 from './assets/8.mov';
+import videoSrc9 from './assets/9.mov';
+import videoSrc10 from './assets/10.mov';
+import videoSrc11 from './assets/11.mov';
+import videoSrc12 from './assets/12.mp4';
+
 const urls = [
     new URL('assets/models/A.glb', import.meta.url),
     new URL('assets/models/R.glb', import.meta.url),

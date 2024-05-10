@@ -1,7 +1,13 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+
+  // Configure Vite to handle MP4/MOV files
+  optimizeDeps: {
+    include: ['**/*.mp4', '**/*.mov'],
+  },
+
   build: {
-    chunkSizeWarningLimit: 1600
+    assetsInlineLimit: '0' // 2kb
   }
 });
