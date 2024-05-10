@@ -17,6 +17,8 @@ import videoSrc9 from './assets/9.mov';
 import videoSrc10 from './assets/10.mov';
 import videoSrc11 from './assets/11.mov';
 import videoSrc12 from './assets/12.mp4';
+import js from './script';
+import font from './assets/FoundryGridnik Regular.otf';
 
 const urls = [
     new URL('assets/models/A.glb', import.meta.url),
