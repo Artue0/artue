@@ -18,20 +18,20 @@ import videoSrc10 from './assets/10.mov';
 import videoSrc11 from './assets/11.mov';
 import videoSrc12 from './assets/12.mp4';
 import font from './assets/FoundryGridnik Regular.otf';
-import imageSrc1 from './assets/2v2.png';
-import imageSrc2 from './assets/dead-cells.jpg';
-import imageSrc3 from './assets/deltarune.jpg';
-import imageSrc4 from './assets/everhood.jpg';
-import imageSrc5 from './assets/hollow-knight.jpg';
-import imageSrc6 from './assets/pizza-tower.jpg';
-import imageSrc7 from './assets/rain-world.png';
-import imageSrc8 from './assets/risk-of-rain-2.jpg';
-import imageSrc9 from './assets/terraria.jpg';
-import imageSrc10 from './assets/the-binding-of-isacc.jpg';
-import imageSrc11 from './assets/the-witness.jpg';
-import imageSrc12 from './assets/tv.png';
-import imageSrc13 from './assets/ultrakill.jpg';
-import imageSrc14 from './assets/undertale.png';
+// import imageSrc1 from './assets/2v2.png';
+// import imageSrc2 from './assets/dead-cells.jpg';
+// import imageSrc3 from './assets/deltarune.jpg';
+// import imageSrc4 from './assets/everhood.jpg';
+// import imageSrc5 from './assets/hollow-knight.jpg';
+// import imageSrc6 from './assets/pizza-tower.jpg';
+// import imageSrc7 from './assets/rain-world.png';
+// import imageSrc8 from './assets/risk-of-rain-2.jpg';
+// import imageSrc9 from './assets/terraria.jpg';
+// import imageSrc10 from './assets/the-binding-of-isacc.jpg';
+// import imageSrc11 from './assets/the-witness.jpg';
+// import imageSrc12 from './assets/tv.png';
+// import imageSrc13 from './assets/ultrakill.jpg';
+// import imageSrc14 from './assets/undertale.png';
 
 const urls = [
     new URL('assets/models/A.glb', import.meta.url),
