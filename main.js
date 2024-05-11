@@ -202,4 +202,6 @@ const videos = [
     videoSrc12,
 ];
 
+import './script.js';
+
 console.log("videos: ", videos);

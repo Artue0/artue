@@ -1,3 +1,4 @@
+console.log("script.js loaded");
 var savedImage = 0;
 let activeIcon = 0;
 let navTop = false;
