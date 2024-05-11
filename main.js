@@ -801,6 +801,8 @@ const videos = [
     videoSrc12,
 ];
 
+console.log(videos);
+
 function togglePlayPause() {
     if (video.paused) {
         video.play();
