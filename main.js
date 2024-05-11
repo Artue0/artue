@@ -174,34 +174,32 @@ window.addEventListener('resize', function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-import videoSrc1 from './assets/videos/1.mp4';
-import videoSrc2 from './assets/videos/2.mp4';
-import videoSrc3 from './assets/videos/3.mov';
-import videoSrc4 from './assets/videos/4.mov';
-import videoSrc5 from './assets/videos/5.mov';
-import videoSrc6 from './assets/videos/6.mov';
-import videoSrc7 from './assets/videos/7.mov';
-import videoSrc8 from './assets/videos/8.mov';
-import videoSrc9 from './assets/videos/9.mov';
-import videoSrc10 from './assets/videos/10.mov';
-import videoSrc11 from './assets/videos/11.mov';
-import videoSrc12 from './assets/videos/12.mp4';
+// import videoSrc1 from './assets/videos/1.mp4';
+// import videoSrc2 from './assets/videos/2.mp4';
+// import videoSrc3 from './assets/videos/3.mov';
+// import videoSrc4 from './assets/videos/4.mov';
+// import videoSrc5 from './assets/videos/5.mov';
+// import videoSrc6 from './assets/videos/6.mov';
+// import videoSrc7 from './assets/videos/7.mov';
+// import videoSrc8 from './assets/videos/8.mov';
+// import videoSrc9 from './assets/videos/9.mov';
+// import videoSrc10 from './assets/videos/10.mov';
+// import videoSrc11 from './assets/videos/11.mov';
+// import videoSrc12 from './assets/videos/12.mp4';
 
-const videos = [
-    videoSrc1,
-    videoSrc2,
-    videoSrc3,
-    videoSrc4,
-    videoSrc5,
-    videoSrc6,
-    videoSrc7,
-    videoSrc8,
-    videoSrc9,
-    videoSrc10,
-    videoSrc11,
-    videoSrc12,
-];
-
-import './script.js';
+// const videos = [
+//     videoSrc1,
+//     videoSrc2,
+//     videoSrc3,
+//     videoSrc4,
+//     videoSrc5,
+//     videoSrc6,
+//     videoSrc7,
+//     videoSrc8,
+//     videoSrc9,
+//     videoSrc10,
+//     videoSrc11,
+//     videoSrc12,
+// ];
 
 console.log("videos: ", videos);
