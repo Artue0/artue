@@ -591,20 +591,22 @@ const play = document.getElementById('playButton');
 const pause = document.getElementById('pauseButton');
 const on = document.getElementById('onButton');
 const off = document.getElementById('offButton');
-const videos = [
-  'assets/videos/1.mp4',
-  'assets/videos/2.mp4',
-  'assets/videos/3.mov',
-  'assets/videos/4.mov',
-  'assets/videos/5.mov',
-  'assets/videos/6.mov',
-  'assets/videos/7.mov',
-  'assets/videos/8.mov',
-  'assets/videos/9.mov',
-  'assets/videos/10.mov',
-  'assets/videos/11.mov',
-  'assets/videos/12.mp4',
-];
+// const videos = [
+//   'assets/videos/1.mp4',
+//   'assets/videos/2.mp4',
+//   'assets/videos/3.mov',
+//   'assets/videos/4.mov',
+//   'assets/videos/5.mov',
+//   'assets/videos/6.mov',
+//   'assets/videos/7.mov',
+//   'assets/videos/8.mov',
+//   'assets/videos/9.mov',
+//   'assets/videos/10.mov',
+//   'assets/videos/11.mov',
+//   'assets/videos/12.mp4',
+// ];
+
+console.log("videos2: ", videos);
 
 function togglePlayPause() {
     if (video.paused) {
