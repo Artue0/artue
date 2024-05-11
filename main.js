@@ -5,18 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import { Line2 } from "three/examples/jsm/lines/Line2";
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-// import videoSrc1 from './assets/1.mp4';
-// import videoSrc2 from './assets/2.mp4';
-// import videoSrc3 from './assets/3.mov';
-// import videoSrc4 from './assets/4.mov';
-// import videoSrc5 from './assets/5.mov';
-// import videoSrc6 from './assets/6.mov';
-// import videoSrc7 from './assets/7.mov';
-// import videoSrc8 from './assets/8.mov';
-// import videoSrc9 from './assets/9.mov';
-// import videoSrc10 from './assets/10.mov';
-// import videoSrc11 from './assets/11.mov';
-// import videoSrc12 from './assets/12.mp4';
+
 // import font from './assets/FoundryGridnik Regular.otf';
 
 const urls = [
@@ -783,19 +772,33 @@ const play = document.getElementById('playButton');
 const pause = document.getElementById('pauseButton');
 const on = document.getElementById('onButton');
 const off = document.getElementById('offButton');
+
+import videoSrc1 from './assets/videos/1.mp4';
+import videoSrc2 from './assets/videos/2.mp4';
+import videoSrc3 from './assets/videos/3.mov';
+import videoSrc4 from './assets/videos/4.mov';
+import videoSrc5 from './assets/videos/5.mov';
+import videoSrc6 from './assets/videos/6.mov';
+import videoSrc7 from './assets/videos/7.mov';
+import videoSrc8 from './assets/videos/8.mov';
+import videoSrc9 from './assets/videos/9.mov';
+import videoSrc10 from './assets/videos/10.mov';
+import videoSrc11 from './assets/videos/11.mov';
+import videoSrc12 from './assets/videos/12.mp4';
+
 const videos = [
-  'assets/videos/1.mp4',
-  'assets/videos/2.mp4',
-  'assets/videos/3.mov',
-  'assets/videos/4.mov',
-  'assets/videos/5.mov',
-  'assets/videos/6.mov',
-  'assets/videos/7.mov',
-  'assets/videos/8.mov',
-  'assets/videos/9.mov',
-  'assets/videos/10.mov',
-  'assets/videos/11.mov',
-  'assets/videos/12.mp4',
+    videoSrc1,
+    videoSrc2,
+    videoSrc3,
+    videoSrc4,
+    videoSrc5,
+    videoSrc6,
+    videoSrc7,
+    videoSrc8,
+    videoSrc9,
+    videoSrc10,
+    videoSrc11,
+    videoSrc12,
 ];
 
 function togglePlayPause() {
