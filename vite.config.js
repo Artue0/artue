@@ -10,6 +10,10 @@ export default defineConfig({
     assetsInlineLimit: '0',
     rollupOptions: {
       preserveEntrySignatures: false
+      // input: {
+      //   main: 'main.js',
+      //   script: 'script.js'
+      // }
     }
   }
 });

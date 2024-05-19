@@ -5,9 +5,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import { Line2 } from "three/examples/jsm/lines/Line2";
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-
-// import font from './assets/FoundryGridnik Regular.otf';
-
 const urls = [
     new URL('assets/models/A.glb', import.meta.url),
     new URL('assets/models/R.glb', import.meta.url),
@@ -16,6 +13,19 @@ const urls = [
     new URL('assets/models/E.glb', import.meta.url)
 ];
 
+
+import videoSrc1 from './assets/videos/1.mp4';
+import videoSrc2 from './assets/videos/2.mp4';
+import videoSrc3 from './assets/videos/3.mov';
+import videoSrc4 from './assets/videos/4.mov';
+import videoSrc5 from './assets/videos/5.mov';
+import videoSrc6 from './assets/videos/6.mov';
+import videoSrc7 from './assets/videos/7.mov';
+import videoSrc8 from './assets/videos/8.mov';
+import videoSrc9 from './assets/videos/9.mov';
+import videoSrc10 from './assets/videos/10.mov';
+import videoSrc11 from './assets/videos/11.mov';
+import videoSrc12 from './assets/videos/12.mp4';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -174,32 +184,37 @@ window.addEventListener('resize', function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// import videoSrc1 from './assets/videos/1.mp4';
-// import videoSrc2 from './assets/videos/2.mp4';
-// import videoSrc3 from './assets/videos/3.mov';
-// import videoSrc4 from './assets/videos/4.mov';
-// import videoSrc5 from './assets/videos/5.mov';
-// import videoSrc6 from './assets/videos/6.mov';
-// import videoSrc7 from './assets/videos/7.mov';
-// import videoSrc8 from './assets/videos/8.mov';
-// import videoSrc9 from './assets/videos/9.mov';
-// import videoSrc10 from './assets/videos/10.mov';
-// import videoSrc11 from './assets/videos/11.mov';
-// import videoSrc12 from './assets/videos/12.mp4';
+import './assets/FoundryGridnik-Regular.ttf';
 
-// const videos = [
-//     videoSrc1,
-//     videoSrc2,
-//     videoSrc3,
-//     videoSrc4,
-//     videoSrc5,
-//     videoSrc6,
-//     videoSrc7,
-//     videoSrc8,
-//     videoSrc9,
-//     videoSrc10,
-//     videoSrc11,
-//     videoSrc12,
-// ];
+import './script.js';
+import { home, about, projects, portfolio, contact, music, games } from './script.js';
+// home(document.getElementById('iconPc').querySelector('i'));
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to navbar icons
+    document.getElementById('iconPc').addEventListener('click', function() {
+        home(document.getElementById('iconPc').querySelector('i'));
+    });
+    document.getElementById('iconCats').addEventListener('click', function() {
+        about(document.getElementById('iconCats').querySelector('i'));
+    });
+    document.getElementById('iconProjects').addEventListener('click', function() {
+        projects(document.getElementById('iconProjects').querySelector('i'));
+    });
+    document.getElementById('iconWebsite').addEventListener('click', function() {
+        portfolio(document.getElementById('iconWebsite').querySelector('i'));
+    });
+    document.getElementById('iconLinks').addEventListener('click', function() {
+        contact(document.getElementById('iconLinks').querySelector('i'));
+    });
+    document.getElementById('iconMusic').addEventListener('click', function() {
+        music(document.getElementById('iconMusic').querySelector('i'));
+    });
+    document.getElementById('iconGames').addEventListener('click', function() {
+        games(document.getElementById('iconGames').querySelector('i'));
+    });
 
-console.log("videos: ", videos);
+    // Add event listener to close button
+    document.querySelector('.button').addEventListener('click', function() {
+
+    });
+});

@@ -1,37 +1,38 @@
 console.log("script.js loaded");
-var savedImage = 0;
-let activeIcon = 0;
-let navTop = false;
-let hideIcon = true;
-let isMoving = false;
-let clickedIcon = null;
-var mainPage = document.getElementById("main-page");
-var catPage = document.getElementById("cat-page");
-var pcPage = document.getElementById("pc-page");
-var musicPage = document.getElementById("music-page");
-var gamesPage = document.getElementById("games-page");
-var projectsPage = document.getElementById("projects-page");
-var websitePage = document.getElementById("website-page");
-var linksPage = document.getElementById("links-page");
-let page;
-let currentPage;
-var enableCode = true;
-const icons = document.querySelectorAll(".icon");
-let selectedIcon = null;
-let index = 0;
-let pos = null;
-const indicator = document.querySelectorAll('#indicator p');
-const pages = document.querySelectorAll("#pc-page, #cat-page, #projects-page, #website-page, #links-page, #music-page, #games-page");
-let nextPercentage2 = null;
-let pageHeight = document.body.scrollHeight;
-const all = document.getElementById("all");
-const titles = document.querySelectorAll(".title, .subtitleBottom, .subtitleTop, .basicText")
-const visibleElements = ".title, .subtitleTop, .subtitleBottom, .basicText, .link, .pcPart, .welcome, .see";
-const buttons = document.querySelectorAll(".projectsMenuButton");
-let showButtons = false;
-let rect2, imageID;
-let clickedImage = false;
-let isClicked = false;
+export var savedImage = 0;
+export let activeIcon = 0;
+export let navTop = false;
+export let hideIcon = true;
+export let isMoving = false;
+export let clickedIcon = null;
+export var mainPage = document.getElementById("main-page");
+export var catPage = document.getElementById("cat-page");
+export var pcPage = document.getElementById("pc-page");
+export var musicPage = document.getElementById("music-page");
+export var gamesPage = document.getElementById("games-page");
+export var projectsPage = document.getElementById("projects-page");
+export var websitePage = document.getElementById("website-page");
+export var linksPage = document.getElementById("links-page");
+export let page;
+export let currentPage;
+export var enableCode = true;
+export const icons = document.querySelectorAll(".icon");
+export let selectedIcon = null;
+export let index = null;
+export let pos = null;
+export const indicator = document.querySelectorAll('#indicator p');
+export const pages = document.querySelectorAll("#pc-page, #cat-page, #projects-page, #website-page, #links-page, #music-page, #games-page");
+export let nextPercentage2 = null;
+export let pageHeight = document.body.scrollHeight;
+export const all = document.getElementById("all");
+export const titles = document.querySelectorAll(".title, .subtitleBottom, .subtitleTop, .basicText")
+export const visibleElements = ".title, .subtitleTop, .subtitleBottom, .basicText, .link, .pcPart, .welcome, .see";
+export const buttons = document.querySelectorAll(".projectsMenuButton");
+export let showButtons = false;
+export let rect2, imageID;
+export let clickedImage = false;
+export let isClicked = false;
+export let imageCopy, clickedElement2;
 
 document.addEventListener('DOMContentLoaded', function () {
     var track = document.getElementById("image-track");
@@ -92,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('mousemove', function (event) {
         handleOnMove(event);
-        console.log("isClicked: ", isClicked);
+        // console.log("clickedElement: ", clickedElement2);
+        // console.log("websitePage: ", websitePage);
     });
 
     window.addEventListener('touchmove', function (event) {
@@ -110,32 +112,39 @@ function handleImageClick(event) {
             case selectedImage.classList.contains("cPc") || selectedImage.classList.contains("imgSetup"):
                 selectedIcon = document.getElementById("iconPc").querySelector("i");
                 page = pcPage;
+                index = 0;
                 break;
             case selectedImage.classList.contains("cCats") || selectedImage.classList.contains("imgCats"):
                 selectedIcon = document.getElementById("iconCats").querySelector("i");
                 page = catPage;
+                index = 1
                 // togglePlayPause();
                 break;
             case selectedImage.classList.contains("cProjects") || selectedImage.classList.contains("imgProjects"):
                 selectedIcon = document.getElementById("iconProjects").querySelector("i");
                 page = projectsPage;
+                index = 2;
                 showButtons = true;
                 break;
             case selectedImage.classList.contains("cWebsite") || selectedImage.classList.contains("imgWebsite"):
                 selectedIcon = document.getElementById("iconWebsite").querySelector("i");
                 page = websitePage;
+                index = 3;
                 break;
             case selectedImage.classList.contains("cLinks") || selectedImage.classList.contains("imgLinks"):
                 selectedIcon = document.getElementById("iconLinks").querySelector("i");
                 page = linksPage;
+                index = 4;
                 break;
             case selectedImage.classList.contains("cMusic") || selectedImage.classList.contains("imgMusic"):
                 selectedIcon = document.getElementById("iconMusic").querySelector("i");
                 page = musicPage;
+                index = 5;
                 break;
             case selectedImage.classList.contains("cGames") || selectedImage.classList.contains("imgGames"):
                 selectedIcon = document.getElementById("iconGames").querySelector("i");
                 page = gamesPage;
+                index = 6;
                 break;
         }
         if (selectedImage.classList.contains("image")){
@@ -208,8 +217,6 @@ function handleImageClick(event) {
         });
         var intervar = setInterval(function() {
             if (window.scrollY === 0) {
-                clearInterval(intervar);
-
                 pages.forEach(page2 => { page2.style.height = `${pageHeight}px`; });
                 all.style.height = `${pageHeight}px`;
 
@@ -217,16 +224,17 @@ function handleImageClick(event) {
                 buttons.forEach(projectsButton => { 
                     projectsButton.classList.remove('buttonVisible');
                     projectsButton.classList.add('buttonInvisible');
-                 });
+                });
 
                 activeIcon = 0;
+                index = null;
                 showButtons = false;
                 savedImage = 0;
                 isClicked = false;
                 imageCopy.classList.add('reverseFullscreen');
                 button.classList.remove('slideDown');
                 button.classList.add('slideUp');
-                pauseVideo();
+                // pauseVideo();
                 setTimeout(function() {
                     imageCopy.parentNode.removeChild(imageCopy);
                     enableCode = !enableCode;
@@ -244,9 +252,55 @@ function handleImageClick(event) {
                 activeElements.forEach(element => {
                     element.classList.remove('active');
                 });
+                clearInterval(intervar);
             }
         }, 128);
     }
+}
+
+
+export function home(){
+    clickedIcon = document.getElementsByClassName('setup')[0];
+    if (index != 0 && !isClicked) {nav(-6.5, "home", clickedIcon, pcPage);}
+    if (index === 0 && navTop && !isClicked) { menu(clickedIcon, pcPage); }
+    index = 0;
+}
+export function about(){
+    clickedIcon = document.getElementsByClassName('cats')[0];
+    if (index != 1 && !isClicked) {nav(-21, "about", clickedIcon, catPage);}
+    if (index === 1 && navTop && !isClicked) { menu(clickedIcon, catPage); }
+    // togglePlayPause();
+    index = 1;
+}
+export function projects(){
+    clickedIcon = document.getElementsByClassName('projects')[0];
+    if (index === 2 && navTop && !isClicked) { menu(clickedIcon, projectsPage); }
+    if (index != 2 && !isClicked) {nav(-35.5, "projects", clickedIcon, projectsPage);}
+    index = 2;
+}
+export function portfolio(){
+    clickedIcon = document.getElementsByClassName('portfolio')[0];
+    if (index === 3 && navTop && !isClicked) { menu(clickedIcon, websitePage); }
+    if (index != 3 && !isClicked) {nav(-50, "portfolio", clickedIcon, websitePage);}
+    index = 3;
+}
+export function contact(){
+    clickedIcon = document.getElementsByClassName('links')[0];
+    if (index === 4 && navTop && !isClicked) { menu(clickedIcon, linksPage); }
+    if (index != 4 && !isClicked) { nav(-64.5, "contact", clickedIcon, linksPage); }
+    index = 4;
+}
+export function music(){
+    clickedIcon = document.getElementsByClassName('music')[0];
+    if (index === 5 && navTop && !isClicked) { menu(clickedIcon, musicPage); }
+    if (index != 5 && !isClicked) {nav(-79, "music", clickedIcon, musicPage);}
+    index = 5;
+}
+export function games(){
+    clickedIcon = document.getElementsByClassName('games')[0];
+    if (index === 6 && navTop && !isClicked) { menu(clickedIcon, gamesPage); }
+    if (index != 6 && !isClicked) {nav(-93.5, "games", clickedIcon, gamesPage);}
+    index = 6;
 }
 
 icons.forEach(icon => {
@@ -254,46 +308,9 @@ icons.forEach(icon => {
         if (hideIcon && !isMoving) {
             this.classList.add("active");
         }
-        activeIcon = this.querySelector("i");
+       activeIcon = this.querySelector("i");
     });
 });
-
-function home(clickedElement){
-    clickedIcon = document.getElementsByClassName('setup')[0];
-    if (clickedElement === activeIcon && navTop && !isClicked) { menu(clickedIcon, pcPage); }
-    if (clickedElement != activeIcon && !isClicked) {nav(-6.5, "home", clickedIcon, pcPage);}
-}
-function about(clickedElement){
-    clickedIcon = document.getElementsByClassName('cats')[0];
-    if (clickedElement === activeIcon && navTop && !isClicked) { menu(clickedIcon, catPage); }
-    if (clickedElement != activeIcon && !isClicked) {nav(-21, "about", clickedIcon, catPage);}
-    // togglePlayPause();
-}
-function projects(clickedElement){
-    clickedIcon = document.getElementsByClassName('projects')[0];
-    if (clickedElement === activeIcon && navTop && !isClicked) { menu(clickedIcon, projectsPage); }
-    if (clickedElement != activeIcon && !isClicked) {nav(-35.5, "projects", clickedIcon, projectsPage);}
-}
-function portfolio(clickedElement){
-    clickedIcon = document.getElementsByClassName('portfolio')[0];
-    if (clickedElement === activeIcon && navTop && !isClicked) { menu(clickedIcon, websitePage); }
-    if (clickedElement != activeIcon && !isClicked) {nav(-50, "portfolio", clickedIcon, websitePage);}
-}
-function contact(clickedElement){
-    clickedIcon = document.getElementsByClassName('links')[0];
-    if (clickedElement === activeIcon && navTop && !isClicked) { menu(clickedIcon, linksPage); }
-    if (clickedElement != activeIcon && !isClicked) { nav(-64.5, "contact", clickedIcon, linksPage); }
-}
-function music(clickedElement){
-    clickedIcon = document.getElementsByClassName('music')[0];
-    if (clickedElement === activeIcon && navTop && !isClicked) { menu(clickedIcon, musicPage); }
-    if (clickedElement != activeIcon && !isClicked) {nav(-79, "music", clickedIcon, musicPage);}
-}
-function games(clickedElement){
-    clickedIcon = document.getElementsByClassName('games')[0];
-    if (clickedElement === activeIcon && navTop && !isClicked) { menu(clickedIcon, gamesPage); }
-    if (clickedElement != activeIcon && !isClicked) {nav(-93.5, "games", clickedIcon, gamesPage);}
-}
 
 function nav(endValue, id, clickedElement, page) {
     console.log("nav");
@@ -377,7 +394,6 @@ function nav(endValue, id, clickedElement, page) {
             }
 
             if ((increment > 0 && nextPercentage >= endValue) || (increment < 0 && nextPercentage <= endValue)) {
-                clearInterval(updatePercentage);
                 const image = document.getElementById(id);
                 imageID = image;
                 rect2 = image.getBoundingClientRect();
@@ -394,7 +410,7 @@ function nav(endValue, id, clickedElement, page) {
                 button.classList.add('slideDown');
                 navTop = true;
                 isMoving = false;
-                if (page != catPage) { pauseVideo(); }
+                // if (page != catPage) { pauseVideo(); }
                 setTimeout(function() {
                     page.querySelectorAll('*').forEach(child => {
                         child.classList.remove("invisible");
@@ -425,6 +441,7 @@ function nav(endValue, id, clickedElement, page) {
                     }, 1000);
                     
                 }, 1000);
+                clearInterval(updatePercentage);
             }
         });
     }
@@ -485,6 +502,7 @@ function menu(clickedElement, page) {
             }
             activeIcon = 0;
             enableCode = true;
+            index = null;
             resizeNormal();
             page.querySelectorAll(visibleElements).forEach(title => { title.style.zIndex = "14"; });
         }, 1200);
@@ -575,7 +593,7 @@ function resizeNormal() {
     console.log("websitePage");
 }
 
-function scrollButton(id) {
+export function scrollButton(id) {
     let element = document.getElementById(id);
     let target = element.offsetTop - element.offsetHeight;
     console.log("target");
@@ -655,6 +673,6 @@ function scrollButton(id) {
 // changeVideo();
 // togglePlayPause();
 
-function getRect(e) {
+export function getRect(e) {
     return e.getBoundingClientRect();
 }
