@@ -102,9 +102,9 @@
             -PROJECTS-
         </h3>
         <div id="projectsMenu">
-            <button class="projectsMenuButton buttonInvisible" onclick="scrollButton('projectsGames')">GAMES</button>
-            <button class="projectsMenuButton buttonInvisible" onclick="scrollButton('projectsAnimaions')" style="transition-delay: 200ms;">ANIMATIONS</button>
-            <button class="projectsMenuButton buttonInvisible" onclick="scrollButton('projectsWebsites')" style="transition-delay: 400ms;">WEBSITES</button>
+            <button id="button1" class="projectsMenuButton buttonInvisible">GAMES</button>
+            <button id="button2" class="projectsMenuButton buttonInvisible" style="transition-delay: 200ms;">ANIMATIONS</button>
+            <button id="button3" class="projectsMenuButton buttonInvisible" style="transition-delay: 400ms;">WEBSITES</button>
         </div>
         <div class="websiteText basicText hidden hidden-blur"><p>Here are some of my projects, mostly they are unfinished, but there are still some cool ones.</p></div>
         <div class="bigText hidden hidden-blur" id="projectsGames"><p>GAMES</p></div>
@@ -473,7 +473,7 @@
         <h2 class="see hidden hidden-up">WHAT WOUDL YOU LIKE TO SEE?</h2>
         <div id="bar">
             <div class="container hidden hidden-blur">
-                <div class="icon2">
+                <div class="icon2" id="pcContainer">
                     <i class="fa-solid fa-computer fa-2xl cPc"></i>
                 </div>
                 <div class="text-container">
@@ -482,7 +482,7 @@
                 </div>
             </div>
             <div class="container hidden hidden-blur">
-                <div class="icon2">
+                <div class="icon2" id="catContainer">
                     <i class="fa-solid fa-cat fa-2xl cCats"></i>
                 </div>
                 <div class="text-container">
@@ -491,7 +491,7 @@
                 </div>
             </div>
             <div class="container hidden hidden-blur">
-                <div class="icon2">
+                <div class="icon2" id="projectsContainer">
                     <i class="fa-solid fa-code fa-2xl cProjects"></i>
                 </div>
                 <div class="text-container">
@@ -500,7 +500,7 @@
                 </div>
             </div>
             <div class="container hidden hidden-blur">
-                <div class="icon2">
+                <div class="icon2" id="websiteContainer">
                     <i class="fa-solid fa-user fa-2xl cWebsite"></i>
                 </div>
                 <div class="text-container">
@@ -509,16 +509,16 @@
                 </div>
             </div>
             <div class="container hidden hidden-blur">
-                <div class="icon2">
+                <div class="icon2" id="linksContainer">
                     <i class="fa-solid fa-phone fa-2xl cLinks"></i>
                 </div>
                 <div class="text-container">
-                    <p>SOME</p>
+                    <p>MY</p>
                     <p>LINKS</p>
                 </div>
             </div>
             <div class="container hidden hidden-blur">
-                <div class="icon2">
+                <div class="icon2" id="musicContainer">
                     <i class="fa-solid fa-music fa-2xl cMusic"></i>
                 </div>
                 <div class="text-container">
@@ -527,7 +527,7 @@
                 </div>
             </div>
             <div class="container hidden hidden-blur seventh">
-                <div class="icon2" onclick="games(null)">
+                <div class="icon2" id="gamesContainer">
                     <i class="fa-solid fa-game-console-handheld fa-2xl cGames"></i>
                 </div> 
                 <div class="text-container">

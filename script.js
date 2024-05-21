@@ -112,39 +112,39 @@ function handleImageClick(event) {
             case selectedImage.classList.contains("cPc") || selectedImage.classList.contains("imgSetup"):
                 selectedIcon = document.getElementById("iconPc").querySelector("i");
                 page = pcPage;
-                index = 0;
+                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 0;}
                 break;
             case selectedImage.classList.contains("cCats") || selectedImage.classList.contains("imgCats"):
                 selectedIcon = document.getElementById("iconCats").querySelector("i");
                 page = catPage;
-                index = 1
+                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 1}
                 // togglePlayPause();
                 break;
             case selectedImage.classList.contains("cProjects") || selectedImage.classList.contains("imgProjects"):
                 selectedIcon = document.getElementById("iconProjects").querySelector("i");
                 page = projectsPage;
-                index = 2;
+                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 2;}
                 showButtons = true;
                 break;
             case selectedImage.classList.contains("cWebsite") || selectedImage.classList.contains("imgWebsite"):
                 selectedIcon = document.getElementById("iconWebsite").querySelector("i");
                 page = websitePage;
-                index = 3;
+                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 3;}
                 break;
             case selectedImage.classList.contains("cLinks") || selectedImage.classList.contains("imgLinks"):
                 selectedIcon = document.getElementById("iconLinks").querySelector("i");
                 page = linksPage;
-                index = 4;
+                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 4;}
                 break;
             case selectedImage.classList.contains("cMusic") || selectedImage.classList.contains("imgMusic"):
                 selectedIcon = document.getElementById("iconMusic").querySelector("i");
                 page = musicPage;
-                index = 5;
+                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 5;}
                 break;
             case selectedImage.classList.contains("cGames") || selectedImage.classList.contains("imgGames"):
                 selectedIcon = document.getElementById("iconGames").querySelector("i");
                 page = gamesPage;
-                index = 6;
+                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 6;}
                 break;
         }
         if (selectedImage.classList.contains("image")){
@@ -258,9 +258,9 @@ function handleImageClick(event) {
     }
 }
 
-
 export function home(){
     clickedIcon = document.getElementsByClassName('setup')[0];
+    console.log("home: ", index);
     if (index != 0 && !isClicked) {nav(-6.5, "home", clickedIcon, pcPage);}
     if (index === 0 && navTop && !isClicked) { menu(clickedIcon, pcPage); }
     index = 0;
@@ -593,8 +593,7 @@ function resizeNormal() {
     console.log("websitePage");
 }
 
-export function scrollButton(id) {
-    let element = document.getElementById(id);
+export function scrollButton(element) {
     let target = element.offsetTop - element.offsetHeight;
     console.log("target");
     if (showButtons) {

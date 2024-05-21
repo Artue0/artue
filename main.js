@@ -190,31 +190,29 @@ import './script.js';
 import { home, about, projects, portfolio, contact, music, games } from './script.js';
 // home(document.getElementById('iconPc').querySelector('i'));
 document.addEventListener('DOMContentLoaded', function() {
-    // Add event listeners to navbar icons
-    document.getElementById('iconPc').addEventListener('click', function() {
-        home(document.getElementById('iconPc').querySelector('i'));
-    });
-    document.getElementById('iconCats').addEventListener('click', function() {
-        about(document.getElementById('iconCats').querySelector('i'));
-    });
-    document.getElementById('iconProjects').addEventListener('click', function() {
-        projects(document.getElementById('iconProjects').querySelector('i'));
-    });
-    document.getElementById('iconWebsite').addEventListener('click', function() {
-        portfolio(document.getElementById('iconWebsite').querySelector('i'));
-    });
-    document.getElementById('iconLinks').addEventListener('click', function() {
-        contact(document.getElementById('iconLinks').querySelector('i'));
-    });
-    document.getElementById('iconMusic').addEventListener('click', function() {
-        music(document.getElementById('iconMusic').querySelector('i'));
-    });
-    document.getElementById('iconGames').addEventListener('click', function() {
-        games(document.getElementById('iconGames').querySelector('i'));
-    });
 
-    // Add event listener to close button
-    document.querySelector('.button').addEventListener('click', function() {
+    document.getElementById('iconPc').addEventListener('click', function() {home();});
+    document.getElementById('pcContainer').addEventListener('click', function() {home();});
 
-    });
+    document.getElementById('iconCats').addEventListener('click', function() {about();});
+    document.getElementById('catContainer').addEventListener('click', function() {about();});
+
+    document.getElementById('iconProjects').addEventListener('click', function() {projects();});
+    document.getElementById('projectsContainer').addEventListener('click', function() {projects();});
+
+    document.getElementById('iconWebsite').addEventListener('click', function() {portfolio();});
+    document.getElementById('websiteContainer').addEventListener('click', function() {portfolio();});
+
+    document.getElementById('iconLinks').addEventListener('click', function() {contact();});
+    document.getElementById('linksContainer').addEventListener('click', function() {contact();});
+
+    document.getElementById('iconMusic').addEventListener('click', function() {music();});
+    document.getElementById('musicContainer').addEventListener('click', function() {music();});
+
+    document.getElementById('iconGames').addEventListener('click', function() {games();});
+    document.getElementById('gamesContainer').addEventListener('click', function() {games();});
+
+    document.getElementById('button1').addEventListener('click', function() {scrollButton(this);});
+    document.getElementById('button2').addEventListener('click', function() {scrollButton(this);});
+    document.getElementById('button3').addEventListener('click', function() {scrollButton(this);});
 });

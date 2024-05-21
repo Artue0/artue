@@ -158,9 +158,6 @@ body {
   margin-top: 100vh;
   user-select: auto;
   font-size: 8vmin;
-  width: 70%;
-  display: flex;
-  justify-content: center;
 }
 
 #bar {
@@ -220,13 +217,12 @@ body {
   transform: translateY(60%);
 }
 
-h1 {
+.welcome {
   z-index: 3;
   color: white;
   width: 100vw;
   font-size: 10vmin;
-  position: absolute;
-  top: 10vh;
+  margin-top: 8vh;
   font-family: FoundryGridnikRegular;
 }
 
@@ -633,8 +629,14 @@ h2 {
   top: 100%; 
 }
 
-.invisible { opacity: 0; }
-.visible { opacity: 1; }
+.invisible { 
+  opacity: 0;
+  pointer-events: none;
+}
+.visible { 
+  opacity: 1;
+  pointer-events: all;
+}
 
 .imageAnim {
   animation: imageAnim 1s forwards;
@@ -985,11 +987,25 @@ h2 {
   margin-bottom: 115vh;
 }
 
-.about-me-text {
-  background-color: rgba(0, 0, 0, 0.85);
+.about-me-text, #hi, .websiteText, .websiteText2, .websiteText3, .basicText, .videoGameText, .container {
+  background-color: rgba(0, 0, 0, 0.9);
+  border-radius: 10px;
 }
 
-.see, #about-me {
+.see, #about-me, .welcome {
   background-color: white;
   color: black;
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.see::selection, #about-me::selection, .welcome::selection {
+  background-color: black;
+  color: white;
 }
