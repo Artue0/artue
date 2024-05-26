@@ -33,6 +33,7 @@ export let rect2, imageID;
 export let clickedImage = false;
 export let isClicked = false;
 export let imageCopy, clickedElement2;
+export let update = false;
 
 document.addEventListener('DOMContentLoaded', function () {
     var track = document.getElementById("image-track");
@@ -93,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('mousemove', function (event) {
         handleOnMove(event);
-        // console.log("clickedElement: ", clickedElement2);
-        // console.log("websitePage: ", websitePage);
+        console.log("imageCopy: ", imageCopy);
+        console.log("savedImage: ", savedImage);
     });
 
     window.addEventListener('touchmove', function (event) {
@@ -412,6 +413,7 @@ function nav(endValue, id, clickedElement, page) {
                 isMoving = false;
                 // if (page != catPage) { pauseVideo(); }
                 setTimeout(function() {
+                    console.log("NOW");
                     page.querySelectorAll('*').forEach(child => {
                         child.classList.remove("invisible");
                     });
@@ -496,6 +498,7 @@ function menu(clickedElement, page) {
         button.classList.add('slideUp');
         mainPage.classList.remove('invisible');
         setTimeout(function () {
+            console.log("NOW");
             if (savedImage) {
                 savedImage.parentNode.removeChild(savedImage);
                 savedImage = 0;
@@ -505,7 +508,7 @@ function menu(clickedElement, page) {
             index = null;
             resizeNormal();
             page.querySelectorAll(visibleElements).forEach(title => { title.style.zIndex = "14"; });
-        }, 1200);
+        }, 1150);
     }
 }
 

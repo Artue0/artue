@@ -5,6 +5,38 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import { Line2 } from "three/examples/jsm/lines/Line2";
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+import './assets/FoundryGridnik-Regular.ttf';
+
+import './script.js';
+import { home, about, projects, portfolio, contact, music, games, savedImage } from './script.js';
+// home(document.getElementById('iconPc').querySelector('i'));
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('iconPc').addEventListener('click', function() {home();});
+    document.getElementById('pcContainer').addEventListener('click', function() {home();});
+
+    document.getElementById('iconCats').addEventListener('click', function() {about();});
+    document.getElementById('catContainer').addEventListener('click', function() {about();});
+
+    document.getElementById('iconProjects').addEventListener('click', function() {projects();});
+    document.getElementById('projectsContainer').addEventListener('click', function() {projects();});
+
+    document.getElementById('iconWebsite').addEventListener('click', function() {portfolio();});
+    document.getElementById('websiteContainer').addEventListener('click', function() {portfolio();});
+
+    document.getElementById('iconLinks').addEventListener('click', function() {contact();});
+    document.getElementById('linksContainer').addEventListener('click', function() {contact();});
+
+    document.getElementById('iconMusic').addEventListener('click', function() {music();});
+    document.getElementById('musicContainer').addEventListener('click', function() {music();});
+
+    document.getElementById('iconGames').addEventListener('click', function() {games();});
+    document.getElementById('gamesContainer').addEventListener('click', function() {games();});
+
+    document.getElementById('button1').addEventListener('click', function() {scrollButton(this);});
+    document.getElementById('button2').addEventListener('click', function() {scrollButton(this);});
+    document.getElementById('button3').addEventListener('click', function() {scrollButton(this);});
+});
+
 const urls = [
     new URL('assets/models/A.glb', import.meta.url),
     new URL('assets/models/R.glb', import.meta.url),
@@ -14,33 +46,51 @@ const urls = [
 ];
 
 
-import videoSrc1 from './assets/videos/1.mp4';
-import videoSrc2 from './assets/videos/2.mp4';
-import videoSrc3 from './assets/videos/3.mov';
-import videoSrc4 from './assets/videos/4.mov';
-import videoSrc5 from './assets/videos/5.mov';
-import videoSrc6 from './assets/videos/6.mov';
-import videoSrc7 from './assets/videos/7.mov';
-import videoSrc8 from './assets/videos/8.mov';
-import videoSrc9 from './assets/videos/9.mov';
-import videoSrc10 from './assets/videos/10.mov';
-import videoSrc11 from './assets/videos/11.mov';
-import videoSrc12 from './assets/videos/12.mp4';
+// import videoSrc1 from './assets/videos/1.mp4';
+// import videoSrc2 from './assets/videos/2.mp4';
+// import videoSrc3 from './assets/videos/3.mov';
+// import videoSrc4 from './assets/videos/4.mov';
+// import videoSrc5 from './assets/videos/5.mov';
+// import videoSrc6 from './assets/videos/6.mov';
+// import videoSrc7 from './assets/videos/7.mov';
+// import videoSrc8 from './assets/videos/8.mov';
+// import videoSrc9 from './assets/videos/9.mov';
+// import videoSrc10 from './assets/videos/10.mov';
+// import videoSrc11 from './assets/videos/11.mov';
+// import videoSrc12 from './assets/videos/12.mp4';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
+let renderer = new THREE.WebGLRenderer();
+let renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('home') });
+let renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById('about') });
+let renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('projects') });
+let renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('portfolio') });
+let renderer6 = new THREE.WebGLRenderer({ canvas: document.getElementById('contact') });
+let renderer7 = new THREE.WebGLRenderer({ canvas: document.getElementById('music') });
+let renderer8 = new THREE.WebGLRenderer({ canvas: document.getElementById('games') });
 renderer.setSize(window.innerWidth, window.innerHeight);
+const track = document.getElementById('image-track');
 document.body.appendChild(renderer.domElement);
+track.appendChild(renderer2.domElement);
+track.appendChild(renderer3.domElement);
+track.appendChild(renderer4.domElement);
+track.appendChild(renderer5.domElement);
+track.appendChild(renderer6.domElement);
+track.appendChild(renderer7.domElement);
+track.appendChild(renderer8.domElement);
+// document.getElementById('bg2').appendChild(renderer.domElement);
 
 // const controls = new OrbitControls(camera, renderer.domElement);
 
 const whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
 var scrolled;
-
 const boxes = [];
 const frameLinesArray = [];
+let changeCanvas = true;
+let activeRenderers = [];
+let updateRenderers = false;
 
 for (let i = 0; i < 1000; i++) {
     const [x, y, z, x2, y2, z2] = Array(6).fill().map(() => THREE.MathUtils.randFloatSpread(300));
@@ -173,8 +223,62 @@ function animate() {
         linesMesh.rotation.z += rotationSpeed;
     });
 
+    if (savedImage !== 0 && changeCanvas) {
+        updateCanvas();
+        changeCanvas = false;
+        updateRenderers = true;
+    }
+
+    if (savedImage === 0){
+        changeCanvas = true;
+        activeRenderers.pop();
+    }
+
+    if (!document.getElementById("main-page").classList.contains('invisible') && updateRenderers) {
+        updateRenderers = false;
+        switch (true) {
+            case savedImage.classList.contains("imgSetup"):
+                renderer2.render(scene, camera);
+                break;
+            case savedImage.classList.contains("imgCats"):
+                renderer3.render(scene, camera);
+                break;
+            case savedImage.classList.contains("imgProjects"):
+                renderer4.render(scene, camera);
+                break;
+            case savedImage.classList.contains("imgWebsite"):
+                renderer5.render(scene, camera);
+                console.log("workds: ", activeRenderers);
+                break;
+            case savedImage.classList.contains("imgLinks"):
+                renderer6.render(scene, camera);
+                break;
+            case savedImage.classList.contains("imgMusic"):
+                renderer7.render(scene, camera);
+                break;
+            case savedImage.classList.contains("imgGames"):
+                renderer8.render(scene, camera);
+                break;
+        }
+    }
+
     renderer.render(scene, camera);
+    activeRenderers.forEach(activeRenderer => { 
+        activeRenderer.render(scene, camera);
+    });
 }
+
+function updateCanvas() {
+    activeRenderers.push(new THREE.WebGLRenderer({ canvas: savedImage }));
+}
+
+renderer2.render(scene, camera);
+renderer3.render(scene, camera);
+renderer4.render(scene, camera);
+renderer5.render(scene, camera);
+renderer6.render(scene, camera);
+renderer7.render(scene, camera);
+renderer8.render(scene, camera);
 
 animate();
 
@@ -182,37 +286,4 @@ window.addEventListener('resize', function() {
     camera.aspect = window.innerWidth / this.window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-import './assets/FoundryGridnik-Regular.ttf';
-
-import './script.js';
-import { home, about, projects, portfolio, contact, music, games } from './script.js';
-// home(document.getElementById('iconPc').querySelector('i'));
-document.addEventListener('DOMContentLoaded', function() {
-
-    document.getElementById('iconPc').addEventListener('click', function() {home();});
-    document.getElementById('pcContainer').addEventListener('click', function() {home();});
-
-    document.getElementById('iconCats').addEventListener('click', function() {about();});
-    document.getElementById('catContainer').addEventListener('click', function() {about();});
-
-    document.getElementById('iconProjects').addEventListener('click', function() {projects();});
-    document.getElementById('projectsContainer').addEventListener('click', function() {projects();});
-
-    document.getElementById('iconWebsite').addEventListener('click', function() {portfolio();});
-    document.getElementById('websiteContainer').addEventListener('click', function() {portfolio();});
-
-    document.getElementById('iconLinks').addEventListener('click', function() {contact();});
-    document.getElementById('linksContainer').addEventListener('click', function() {contact();});
-
-    document.getElementById('iconMusic').addEventListener('click', function() {music();});
-    document.getElementById('musicContainer').addEventListener('click', function() {music();});
-
-    document.getElementById('iconGames').addEventListener('click', function() {games();});
-    document.getElementById('gamesContainer').addEventListener('click', function() {games();});
-
-    document.getElementById('button1').addEventListener('click', function() {scrollButton(this);});
-    document.getElementById('button2').addEventListener('click', function() {scrollButton(this);});
-    document.getElementById('button3').addEventListener('click', function() {scrollButton(this);});
 });
