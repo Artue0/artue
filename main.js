@@ -259,20 +259,32 @@ function animate() {
     if(!navTop && updateRenderers){
         setTimeout(function() {
             console.log("UPDATE");
-            // switch(true) {
-            //     case selectedImage.classList.contains("imgSetup"):
-            //         break;
-            // }
-            renderer.render(scene, camera);
-            renderer2.render(scene, websiteCamera);
-            renderer3.render(scene, websiteCamera);
-            renderer4.render(scene, websiteCamera);
-            renderer5.render(scene, camera);
-            renderer6.render(scene, websiteCamera);
-            renderer7.render(scene, websiteCamera);
-            renderer8.render(scene, websiteCamera);
+            switch(true) {
+                case savedImage.classList.contains("imgSetup"):
+                    renderer2.render(scene, camera);
+                    break;
+                case savedImage.classList.contains("imgCats"):
+                    renderer3.render(scene, camera);
+                    break;
+                case savedImage.classList.contains("imgProjects"):
+                    renderer4.render(scene, camera);
+                    break;
+                case savedImage.classList.contains("imgWebsite"):
+                    renderer5.render(scene, camera);
+                    break;
+                case savedImage.classList.contains("imgLinks"):
+                    renderer6.render(scene, camera);
+                    break;
+                case savedImage.classList.contains("imgMusic"):
+                    renderer7.render(scene, camera);
+                    break;
+                case savedImage.classList.contains("imgGames"):
+                    renderer8.render(scene, camera);
+                    break;
+            }
         }, 1150);
         updateRenderers = false;
+        activeRenderer.dispose();
     }
 
     if (!document.getElementById("main-page").classList.contains('invisible') && updateRenderers) {
