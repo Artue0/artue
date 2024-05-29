@@ -94,8 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('mousemove', function (event) {
         handleOnMove(event);
-        console.log("imageCopy: ", imageCopy);
-        console.log("savedImage: ", savedImage);
+        console.log("navTop: ", navTop);
     });
 
     window.addEventListener('touchmove', function (event) {
@@ -170,6 +169,7 @@ function handleImageClick(event) {
     if (selectedImage.classList.contains('image') && !selectedImage.classList.contains('fullscreen') && enableCode && !isClicked){
         clickedImage = true;
         isClicked = true;
+        update = false;
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
@@ -232,6 +232,7 @@ function handleImageClick(event) {
                 showButtons = false;
                 savedImage = 0;
                 isClicked = false;
+                navTop = false;
                 imageCopy.classList.add('reverseFullscreen');
                 button.classList.remove('slideDown');
                 button.classList.add('slideUp');
@@ -239,6 +240,7 @@ function handleImageClick(event) {
                 setTimeout(function() {
                     imageCopy.parentNode.removeChild(imageCopy);
                     enableCode = !enableCode;
+                    update = true;
                     titles.forEach(title => { title.style.zIndex = "14"; });
                 }, 1200);
 
@@ -320,6 +322,7 @@ function nav(endValue, id, clickedElement, page) {
     hideIcon = true;
     isMoving = true;
     enableCode = false;
+    update = false;
     const track = document.getElementById("image-track");
     let currentPercentage = parseFloat(track.dataset.percentage);
     const button = document.getElementsByClassName('button')[0];
@@ -505,10 +508,11 @@ function menu(clickedElement, page) {
             }
             activeIcon = 0;
             enableCode = true;
+            update = true;
             index = null;
             resizeNormal();
             page.querySelectorAll(visibleElements).forEach(title => { title.style.zIndex = "14"; });
-        }, 1150);
+        }, 1200);
     }
 }
 

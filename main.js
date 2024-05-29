@@ -8,7 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import './assets/FoundryGridnik-Regular.ttf';
 
 import './script.js';
-import { home, about, projects, portfolio, contact, music, games, savedImage } from './script.js';
+import { home, about, projects, portfolio, contact, music, games, savedImage, navTop } from './script.js';
 // home(document.getElementById('iconPc').querySelector('i'));
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('iconPc').addEventListener('click', function() {home();});
@@ -59,17 +59,42 @@ const urls = [
 // import videoSrc11 from './assets/videos/11.mov';
 // import videoSrc12 from './assets/videos/12.mp4';
 
+const whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 let renderer = new THREE.WebGLRenderer();
-let renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('home') });
-let renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById('about') });
-let renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('projects') });
-let renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('portfolio') });
-let renderer6 = new THREE.WebGLRenderer({ canvas: document.getElementById('contact') });
-let renderer7 = new THREE.WebGLRenderer({ canvas: document.getElementById('music') });
-let renderer8 = new THREE.WebGLRenderer({ canvas: document.getElementById('games') });
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+let renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('home') });
+renderer2.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById('about') });
+renderer3.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('projects') });
+renderer4.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('portfolio') });
+renderer5.setSize(window.innerWidth, window.innerHeight, false);
+const websiteScene = new THREE.Scene();
+const websiteCamera = new THREE.PerspectiveCamera(75, 50 / 34, 0.1, 1000);
+const whiteMaterialOutline = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true });
+const box_geometry2 = new THREE.BoxGeometry(2.03, 2.03, 2.03);
+const box2 = new THREE.Mesh(box_geometry2, whiteMaterialOutline);
+box2.position.z = -10;
+websiteScene.add(box2);
+
+let renderer6 = new THREE.WebGLRenderer({ canvas: document.getElementById('contact') });
+renderer6.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer7 = new THREE.WebGLRenderer({ canvas: document.getElementById('music') });
+renderer7.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer8 = new THREE.WebGLRenderer({ canvas: document.getElementById('games') });
+renderer8.setSize(window.innerWidth, window.innerHeight, false);
+
 const track = document.getElementById('image-track');
 document.body.appendChild(renderer.domElement);
 track.appendChild(renderer2.domElement);
@@ -83,13 +108,11 @@ track.appendChild(renderer8.domElement);
 
 // const controls = new OrbitControls(camera, renderer.domElement);
 
-const whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
-const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
 var scrolled;
 const boxes = [];
 const frameLinesArray = [];
 let changeCanvas = true;
-let activeRenderers = [];
+let activeRenderer = null;
 let updateRenderers = false;
 
 for (let i = 0; i < 1000; i++) {
@@ -231,59 +254,52 @@ function animate() {
 
     if (savedImage === 0){
         changeCanvas = true;
-        activeRenderers.pop();
+    }
+
+    if(!navTop && updateRenderers){
+        setTimeout(function() {
+            console.log("UPDATE");
+            // switch(true) {
+            //     case selectedImage.classList.contains("imgSetup"):
+            //         break;
+            // }
+            renderer.render(scene, camera);
+            renderer2.render(scene, websiteCamera);
+            renderer3.render(scene, websiteCamera);
+            renderer4.render(scene, websiteCamera);
+            renderer5.render(scene, camera);
+            renderer6.render(scene, websiteCamera);
+            renderer7.render(scene, websiteCamera);
+            renderer8.render(scene, websiteCamera);
+        }, 1150);
+        updateRenderers = false;
     }
 
     if (!document.getElementById("main-page").classList.contains('invisible') && updateRenderers) {
-        updateRenderers = false;
-        switch (true) {
-            case savedImage.classList.contains("imgSetup"):
-                renderer2.render(scene, camera);
-                break;
-            case savedImage.classList.contains("imgCats"):
-                renderer3.render(scene, camera);
-                break;
-            case savedImage.classList.contains("imgProjects"):
-                renderer4.render(scene, camera);
-                break;
-            case savedImage.classList.contains("imgWebsite"):
-                renderer5.render(scene, camera);
-                console.log("workds: ", activeRenderers);
-                break;
-            case savedImage.classList.contains("imgLinks"):
-                renderer6.render(scene, camera);
-                break;
-            case savedImage.classList.contains("imgMusic"):
-                renderer7.render(scene, camera);
-                break;
-            case savedImage.classList.contains("imgGames"):
-                renderer8.render(scene, camera);
-                break;
-        }
+        // updateRenderers = false;
     }
 
-    renderer.render(scene, camera);
-    activeRenderers.forEach(activeRenderer => { 
-        activeRenderer.render(scene, camera);
-    });
+    // renderer.render(scene, camera);
+    // renderer5.render(scene, camera);
+    if(activeRenderer !== null) {activeRenderer.render(scene, camera);}
 }
 
 function updateCanvas() {
-    activeRenderers.push(new THREE.WebGLRenderer({ canvas: savedImage }));
+    activeRenderer = new THREE.WebGLRenderer({ canvas: savedImage });
 }
-
-renderer2.render(scene, camera);
-renderer3.render(scene, camera);
-renderer4.render(scene, camera);
+renderer.render(scene, camera);
+renderer2.render(scene, websiteCamera);
+renderer3.render(scene, websiteCamera);
+renderer4.render(scene, websiteCamera);
 renderer5.render(scene, camera);
-renderer6.render(scene, camera);
-renderer7.render(scene, camera);
-renderer8.render(scene, camera);
+renderer6.render(scene, websiteCamera);
+renderer7.render(scene, websiteCamera);
+renderer8.render(scene, websiteCamera);
 
 animate();
 
 window.addEventListener('resize', function() {
-    camera.aspect = window.innerWidth / this.window.innerHeight;
+    camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
