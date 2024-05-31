@@ -59,6 +59,13 @@ const urls = [
 // import videoSrc11 from './assets/videos/11.mov';
 // import videoSrc12 from './assets/videos/12.mp4';
 
+
+const loadingManager = new THREE.LoadingManager();
+
+loadingManager.onProgress = function(url, loaded, total) {document.getElementById("progressBarContainer").querySelector("label").innerText = `[${Math.round((loaded / total) * 100)}%]`;}
+loadingManager.onLoad = function() {document.getElementById('progressBarContainer').style.display = "none";}
+
+
 const whiteMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 const blackMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
@@ -115,7 +122,7 @@ let changeCanvas = true;
 let activeRenderer = null;
 let updateRenderers = false;
 
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 700; i++) {
     const [x, y, z, x2, y2, z2] = Array(6).fill().map(() => THREE.MathUtils.randFloatSpread(300));
     const [x3, y3, z3] = Array(6).fill().map(() => THREE.MathUtils.randFloatSpread(400));
     const [rot_x, rot_y, rot_z] = Array(3).fill().map(() => Math.random() * 360);
@@ -152,7 +159,7 @@ for (let i = 0; i < 1000; i++) {
     frameLinesArray.push({ linesMesh: frameLines, rotationSpeed: rotationSpeed })
 }
 
-const assetLoader = new GLTFLoader();
+const assetLoader = new GLTFLoader(loadingManager);
 const models = [];
 
 function loadModelsSequentially(index) {
@@ -257,47 +264,59 @@ function animate() {
     }
 
     if(!navTop && updateRenderers){
-        setTimeout(function() {
-            console.log("UPDATE");
-            switch(true) {
-                case savedImage.classList.contains("imgSetup"):
-                    renderer2.render(scene, camera);
-                    break;
-                case savedImage.classList.contains("imgCats"):
-                    renderer3.render(scene, camera);
-                    break;
-                case savedImage.classList.contains("imgProjects"):
-                    renderer4.render(scene, camera);
-                    break;
-                case savedImage.classList.contains("imgWebsite"):
-                    renderer5.render(scene, camera);
-                    break;
-                case savedImage.classList.contains("imgLinks"):
-                    renderer6.render(scene, camera);
-                    break;
-                case savedImage.classList.contains("imgMusic"):
-                    renderer7.render(scene, camera);
-                    break;
-                case savedImage.classList.contains("imgGames"):
-                    renderer8.render(scene, camera);
-                    break;
+        var intervar = setInterval(function() {
+            if (window.scrollY === 0) {
+                clearInterval(intervar);
+                setTimeout(function() {
+                    console.log("savedImage: ", savedImage);
+                    switch(true) {
+                        case savedImage.classList.contains("imgSetup"):
+                            renderer2.render(scene, camera);
+                            break;
+                        case savedImage.classList.contains("imgCats"):
+                            renderer3.render(scene, camera);
+                            break;
+                        case savedImage.classList.contains("imgProjects"):
+                            renderer4.render(scene, camera);
+                            break;
+                        case savedImage.classList.contains("imgWebsite"):
+                            renderer5.render(scene, camera);
+                            break;
+                        case savedImage.classList.contains("imgLinks"):
+                            renderer6.render(scene, camera);
+                            break;
+                        case savedImage.classList.contains("imgMusic"):
+                            renderer7.render(scene, camera);
+                            break;
+                        case savedImage.classList.contains("imgGames"):
+                            renderer8.render(scene, camera);
+                            break;
+                    }
+                }, 1150);
             }
-        }, 1150);
+        }, 16);
         updateRenderers = false;
-        activeRenderer.dispose();
     }
 
     if (!document.getElementById("main-page").classList.contains('invisible') && updateRenderers) {
         // updateRenderers = false;
     }
 
-    // renderer.render(scene, camera);
+    renderer.render(scene, camera);
     // renderer5.render(scene, camera);
     if(activeRenderer !== null) {activeRenderer.render(scene, camera);}
 }
 
 function updateCanvas() {
-    activeRenderer = new THREE.WebGLRenderer({ canvas: savedImage });
+    if(activeRenderer !== null) {
+        activeRenderer.dispose();
+        let newRenderer = new THREE.WebGLRenderer({ canvas: savedImage });
+        newRenderer.setSize(window.innerWidth, window.innerHeight);
+        newRenderer.setPixelRatio(window.devicePixelRatio);
+        activeRenderer = newRenderer;
+    } else {
+        activeRenderer = new THREE.WebGLRenderer({ canvas: savedImage });
+    }
 }
 renderer.render(scene, camera);
 renderer2.render(scene, websiteCamera);
