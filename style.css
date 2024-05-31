@@ -1044,4 +1044,5 @@ h2 {
   font-size: 7vmin;
   font-family: FoundryGridnikRegular;
   font-weight: bold;
+  pointer-events: none;
 }

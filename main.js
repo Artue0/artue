@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('websiteContainer').addEventListener('click', function() {portfolio();});
 
     document.getElementById('iconLinks').addEventListener('click', function() {contact();});
-    document.getElementById('linksContainer').addEventListener('click', function() {contact();});
+    document.getElementById('linksContainer2').addEventListener('click', function() {contact();});
 
     document.getElementById('iconMusic').addEventListener('click', function() {music();});
     document.getElementById('musicContainer').addEventListener('click', function() {music();});
@@ -319,13 +319,13 @@ function updateCanvas() {
     }
 }
 renderer.render(scene, camera);
-renderer2.render(scene, websiteCamera);
-renderer3.render(scene, websiteCamera);
-renderer4.render(scene, websiteCamera);
+renderer2.render(scene, camera);
+renderer3.render(scene, camera);
+renderer4.render(scene, camera);
 renderer5.render(scene, camera);
-renderer6.render(scene, websiteCamera);
-renderer7.render(scene, websiteCamera);
-renderer8.render(scene, websiteCamera);
+renderer6.render(scene, camera);
+renderer7.render(scene, camera);
+renderer8.render(scene, camera);
 
 animate();
 

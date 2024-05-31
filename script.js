@@ -232,6 +232,7 @@ function handleImageClick(event) {
                 showButtons = false;
                 savedImage = 0;
                 isClicked = false;
+                navTop = false;
                 imageCopy.classList.add('reverseFullscreen');
                 button.classList.remove('slideDown');
                 button.classList.add('slideUp');
@@ -239,7 +240,6 @@ function handleImageClick(event) {
                 setTimeout(function() {
                     imageCopy.parentNode.removeChild(imageCopy);
                     enableCode = !enableCode;
-                    navTop = false;
                     titles.forEach(title => { title.style.zIndex = "14"; });
                 }, 1200);
 
