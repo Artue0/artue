@@ -32,7 +32,8 @@ export let showButtons = false;
 export let rect2, imageID;
 export let clickedImage = false;
 export let isClicked = false;
-export let imageCopy, clickedElement2;
+export let imageCopy = document.getElementById('bg');
+export let clickedElement2;
 export let update = false;
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -177,10 +178,11 @@ function handleImageClick(event) {
         var intervar = setInterval(function() {
             if (window.scrollY === 0) {
                 clearInterval(intervar);
-                imageCopy = selectedImage.cloneNode(true);
+                // imageCopy = selectedImage.cloneNode(true);
                 savedImage = imageCopy;
                 enableCode = !enableCode;
-                document.body.appendChild(imageCopy);
+                // document.body.appendChild(imageCopy);
+                imageCopy.classList.remove('displayNone');
                 imageCopy.classList.add('fullscreen');
                 imageCopy.style.setProperty('--start-x', rect.left + 'px');
                 button.classList.remove('slideUp');
@@ -230,18 +232,19 @@ function handleImageClick(event) {
                 activeIcon = 0;
                 index = null;
                 showButtons = false;
-                savedImage = 0;
                 isClicked = false;
                 navTop = false;
                 imageCopy.classList.add('reverseFullscreen');
+                imageCopy.classList.remove('fullscreen');
                 button.classList.remove('slideDown');
                 button.classList.add('slideUp');
                 // pauseVideo();
                 setTimeout(function() {
-                    imageCopy.parentNode.removeChild(imageCopy);
+                    savedImage.classList.remove('reverseFullscreen');
+                    savedImage = 0;
                     enableCode = !enableCode;
                     titles.forEach(title => { title.style.zIndex = "14"; });
-                }, 1200);
+                }, 1500);
 
                 mainPage.classList.remove('invisible');
                 pages.forEach(page2 => {
@@ -357,16 +360,18 @@ function nav(endValue, id, clickedElement, page) {
         if (savedImage === 0) {
             startUpdatePercentage();
         } else {
-            setTimeout(startUpdatePercentage, 1200);
+            setTimeout(startUpdatePercentage, 1500);
             savedImage.classList.add('reverseFullscreen');
+            savedImage.classList.remove('fullscreen');
             button.classList.remove('slideDown');
             button.classList.add('slideUp');
             clickedElement.classList.add("active");
             navTop = false;
             setTimeout(function() {
-                savedImage.remove();
+                // savedImage.remove();
+                savedImage.classList.remove('reverseFullscreen');
                 savedImage = 0;
-            }, 1200);
+            }, 1500);
             mainPage.classList.add('invisible');
             pages.forEach(page2 => {
                 page2.querySelectorAll('*').forEach(child => {
@@ -401,12 +406,13 @@ function nav(endValue, id, clickedElement, page) {
                 imageID = image;
                 rect2 = image.getBoundingClientRect();
                 console.log("correct rect2: ", rect2.left);
-                imageCopy = image.cloneNode(true);
+                // imageCopy = image.cloneNode(true);
+                imageCopy.classList.remove('displayNone');
                 imageCopy.style.boxShadow = "none";
                 imageCopy.classList.remove("imageAnim");
                 imageCopy.classList.add("visible");
                 savedImage = imageCopy;
-                document.body.appendChild(imageCopy);
+                // document.body.appendChild(imageCopy);
                 imageCopy.classList.add('fullscreen');
                 imageCopy.style.setProperty('--start-x', rect2.left + 'px');
                 button.classList.remove('slideUp');
@@ -494,7 +500,10 @@ function menu(clickedElement, page) {
                 child.classList.add("invisible");
             });
         });
-        if (savedImage) { savedImage.classList.add('reverseFullscreen'); }
+        if (savedImage) { 
+            savedImage.classList.add('reverseFullscreen');
+            savedImage.classList.remove('fullscreen');
+        }
         if (clickedElement) { clickedElement.classList.remove("active"); }
         button.classList.remove('slideDown');
         button.classList.add('slideUp');
@@ -502,7 +511,8 @@ function menu(clickedElement, page) {
         setTimeout(function () {
             console.log("NOW");
             if (savedImage) {
-                savedImage.parentNode.removeChild(savedImage);
+                // savedImage.remove();
+                savedImage.classList.remove('reverseFullscreen');
                 savedImage = 0;
             }
             activeIcon = 0;
@@ -511,7 +521,7 @@ function menu(clickedElement, page) {
             index = null;
             resizeNormal();
             page.querySelectorAll(visibleElements).forEach(title => { title.style.zIndex = "14"; });
-        }, 1200);
+        }, 1500);
     }
 }
 
