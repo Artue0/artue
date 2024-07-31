@@ -8,7 +8,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import './assets/FoundryGridnik-Regular.ttf';
 
 import './script.js';
-import { home, about, projects, portfolio, contact, music, games, savedImage, navTop } from './script.js';
+import { home, about, projects, portfolio, contact, music, games, savedImage, mainIndex } from './script.js';
 // home(document.getElementById('iconPc').querySelector('i'));
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('iconPc').addEventListener('click', function() {home();});
@@ -238,7 +238,6 @@ window.addEventListener('scroll', function() {
     }
 });
 
-let hasReverseFullscreen = false;
 function animate() {
     requestAnimationFrame(animate);
 
@@ -256,98 +255,55 @@ function animate() {
         linesMesh.rotation.z += rotationSpeed;
     });
 
-    if (savedImage !== 0 && changeCanvas) {
-        updateCanvas();
-        changeCanvas = false;
-        updateRenderers = true;
-    }
-
-    if (savedImage === 0){
-        changeCanvas = true;
-    }
-
-    // if (savedImage !== null && savedImage.classList.contains('reverseFullscreen')) {
-    //     hasReverseFullscreen = true;
-    // } else if (hasReverseFullscreen) {
-    //     hasReverseFullscreen = false;
-    //     switch(true) {
-    //         case savedImage.classList.contains("imgSetup"):
-    //             renderer2.render(scene, camera);
-    //             break;
-    //         case savedImage.classList.contains("imgCats"):
-    //             renderer3.render(scene, camera);
-    //             break;
-    //         case savedImage.classList.contains("imgProjects"):
-    //             renderer4.render(scene, camera);
-    //             break;
-    //         case savedImage.classList.contains("imgWebsite"):
-    //             renderer5.render(scene, camera);
-    //             break;
-    //         case savedImage.classList.contains("imgLinks"):
-    //             renderer6.render(scene, camera);
-    //             break;
-    //         case savedImage.classList.contains("imgMusic"):
-    //             renderer7.render(scene, camera);
-    //             break;
-    //         case savedImage.classList.contains("imgGames"):
-    //             renderer8.render(scene, camera);
-    //             break;
-    //     }
+    // if (update) {
+    //     updateRenderers = true;
     // }
 
-    if(!navTop && updateRenderers){
-        var intervar = setInterval(function() {
-            if (window.scrollY === 0) {
-                clearInterval(intervar);
-                // setTimeout(function() {
-                //     activeRenderer.dispose();
-                //     document.body.removeChild(savedImage);
-                //     console.log('Renderer and canvas disposed');
-                //     console.log("savedImage: ", savedImage);
-                //     switch(true) {
-                //         case savedImage.classList.contains("imgSetup"):
-                //             renderer2.render(scene, camera);
-                //             break;
-                //         case savedImage.classList.contains("imgCats"):
-                //             renderer3.render(scene, camera);
-                //             break;
-                //         case savedImage.classList.contains("imgProjects"):
-                //             renderer4.render(scene, camera);
-                //             break;
-                //         case savedImage.classList.contains("imgWebsite"):
-                //             renderer5.render(scene, camera);
-                //             break;
-                //         case savedImage.classList.contains("imgLinks"):
-                //             renderer6.render(scene, camera);
-                //             break;
-                //         case savedImage.classList.contains("imgMusic"):
-                //             renderer7.render(scene, camera);
-                //             break;
-                //         case savedImage.classList.contains("imgGames"):
-                //             renderer8.render(scene, camera);
-                //             break;
-                //     }
-                // }, 1150);
-            }
-        }, 16);
-        updateRenderers = false;
+    // if (updateRenderers) {
+    //     updateRenderers = false;
+    // }
+
+    if (savedImage !== 0) {
+        if (savedImage.classList.contains('reverseFullscreen')) {
+            updateRenderers = true;
+            setTimeout(function() {
+                if (updateRenderers) {
+                    updateRenderers = false;
+                    console.log('mainIndex (main): ', mainIndex)
+                    switch(true) {
+                        case mainIndex === 0:
+                            renderer2.render(scene, camera);
+                            break;
+                        case mainIndex === 1:
+                            renderer3.render(scene, camera);
+                            break;
+                        case mainIndex === 2:
+                            renderer4.render(scene, camera);
+                            break;
+                        case mainIndex === 3:
+                            renderer5.render(scene, camera);
+                            break;
+                        case mainIndex === 4:
+                            renderer6.render(scene, camera);
+                            break;
+                        case mainIndex === 5:
+                            renderer7.render(scene, camera);
+                            break;
+                        case mainIndex === 6:
+                            renderer8.render(scene, camera);
+                            break;
+                    }
+                }
+            }, 1400);
+        }
     }
 
-    if (!document.getElementById("main-page").classList.contains('invisible') && updateRenderers) {
-        // updateRenderers = false;
-    }
-    renderer.dispose();
+    // renderer.dispose();
     renderer.render(scene, camera);
     // renderer5.render(scene, camera);
     if(activeRenderer !== null) {activeRenderer.render(scene, camera);}
 }
 
-function updateCanvas() {
-    // activeRenderer = new THREE.WebGLRenderer({ canvas: savedImage });
-    // setTimeout(function() {
-    //     activeRenderer.setSize(window.innerWidth, window.innerHeight);
-    // }, 700);
-}
 renderer.render(scene, camera);
 renderer2.render(scene, camera);
 renderer3.render(scene, camera);

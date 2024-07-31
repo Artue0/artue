@@ -35,6 +35,8 @@ export let isClicked = false;
 export let imageCopy = document.getElementById('bg');
 export let clickedElement2;
 export let update = false;
+export let lastIndex = null;
+export let mainIndex = null;
 
 document.addEventListener('DOMContentLoaded', function () {
     var track = document.getElementById("image-track");
@@ -95,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('mousemove', function (event) {
         handleOnMove(event);
-        console.log("navTop: ", navTop);
     });
 
     window.addEventListener('touchmove', function (event) {
@@ -230,10 +231,36 @@ function handleImageClick(event) {
                 });
 
                 activeIcon = 0;
-                index = null;
                 showButtons = false;
                 isClicked = false;
                 navTop = false;
+                let id;
+                switch(true) {
+                    case index === 0:
+                        id = 'home';
+                        break;
+                    case index === 1:
+                        id = 'about';
+                        break;
+                    case index === 2:
+                        id = 'projects';
+                        break;
+                    case index === 3:
+                        id = 'portfolio';
+                        break;
+                    case index === 4:
+                        id = 'contact';
+                        break;
+                    case index === 5:
+                        id = 'music';
+                        break;
+                    case index === 6:
+                        id = 'games';
+                        break;
+                }
+                mainIndex = index;
+                imageCopy.style.setProperty('--current-objectPos', getComputedStyle(imageCopy).objectPosition);
+                imageCopy.style.setProperty('--target-objectPos', getComputedStyle(document.getElementById(id)).objectPosition);
                 imageCopy.classList.add('reverseFullscreen');
                 imageCopy.classList.remove('fullscreen');
                 button.classList.remove('slideDown');
@@ -242,6 +269,7 @@ function handleImageClick(event) {
                 setTimeout(function() {
                     savedImage.classList.remove('reverseFullscreen');
                     savedImage = 0;
+                    index = null;
                     enableCode = !enableCode;
                     titles.forEach(title => { title.style.zIndex = "14"; });
                 }, 1500);
@@ -266,46 +294,60 @@ function handleImageClick(event) {
 export function home(){
     clickedIcon = document.getElementsByClassName('setup')[0];
     console.log("home: ", index);
+    if (index !== null) {lastIndex = index;}
     if (index != 0 && !isClicked) {nav(-6.5, "home", clickedIcon, pcPage);}
-    if (index === 0 && navTop && !isClicked) { menu(clickedIcon, pcPage); }
+    if (index === 0 && navTop && !isClicked) { menu(clickedIcon, pcPage, "home"); }
     index = 0;
+    mainIndex = index;
 }
 export function about(){
     clickedIcon = document.getElementsByClassName('cats')[0];
+    if (index !== null) {lastIndex = index;}
     if (index != 1 && !isClicked) {nav(-21, "about", clickedIcon, catPage);}
-    if (index === 1 && navTop && !isClicked) { menu(clickedIcon, catPage); }
+    if (index === 1 && navTop && !isClicked) { menu(clickedIcon, catPage, "about"); }
     // togglePlayPause();
     index = 1;
+    mainIndex = index;
 }
 export function projects(){
     clickedIcon = document.getElementsByClassName('projects')[0];
-    if (index === 2 && navTop && !isClicked) { menu(clickedIcon, projectsPage); }
+    if (index !== null) {lastIndex = index;}
+    if (index === 2 && navTop && !isClicked) { menu(clickedIcon, projectsPage, "projects"); }
     if (index != 2 && !isClicked) {nav(-35.5, "projects", clickedIcon, projectsPage);}
     index = 2;
+    mainIndex = index;
 }
 export function portfolio(){
     clickedIcon = document.getElementsByClassName('portfolio')[0];
-    if (index === 3 && navTop && !isClicked) { menu(clickedIcon, websitePage); }
+    if (index !== null) {lastIndex = index;}
+    if (index === 3 && navTop && !isClicked) { menu(clickedIcon, websitePage, "portfolio"); }
     if (index != 3 && !isClicked) {nav(-50, "portfolio", clickedIcon, websitePage);}
     index = 3;
+    mainIndex = index;
 }
 export function contact(){
     clickedIcon = document.getElementsByClassName('links')[0];
-    if (index === 4 && navTop && !isClicked) { menu(clickedIcon, linksPage); }
+    if (index !== null) {lastIndex = index;}
+    if (index === 4 && navTop && !isClicked) { menu(clickedIcon, linksPage, "contact"); }
     if (index != 4 && !isClicked) { nav(-64.5, "contact", clickedIcon, linksPage); }
     index = 4;
+    mainIndex = index;
 }
 export function music(){
     clickedIcon = document.getElementsByClassName('music')[0];
-    if (index === 5 && navTop && !isClicked) { menu(clickedIcon, musicPage); }
+    if (index !== null) {lastIndex = index;}
+    if (index === 5 && navTop && !isClicked) { menu(clickedIcon, musicPage, "music"); }
     if (index != 5 && !isClicked) {nav(-79, "music", clickedIcon, musicPage);}
     index = 5;
+    mainIndex = index;
 }
 export function games(){
     clickedIcon = document.getElementsByClassName('games')[0];
-    if (index === 6 && navTop && !isClicked) { menu(clickedIcon, gamesPage); }
+    if (index !== null) {lastIndex = index;}
+    if (index === 6 && navTop && !isClicked) { menu(clickedIcon, gamesPage, "games"); }
     if (index != 6 && !isClicked) {nav(-93.5, "games", clickedIcon, gamesPage);}
     index = 6;
+    mainIndex = index;
 }
 
 icons.forEach(icon => {
@@ -320,7 +362,13 @@ icons.forEach(icon => {
 function nav(endValue, id, clickedElement, page) {
     console.log("nav");
     if(isMoving){return;}
-
+    setTimeout(function() {
+        // index = lastIndex;
+        console.log('clickedElement: ', clickedElement)
+        // if (savedImage !== 0) {
+        // }
+    }, 1);
+    // index = lastIndex;
     hideIcon = true;
     isMoving = true;
     enableCode = false;
@@ -341,7 +389,6 @@ function nav(endValue, id, clickedElement, page) {
     }
 
     isClicked = true;
-    console.log("isClicked = true;");
     setTimeout(function() { isClicked = false; }, 1200);
 
     if (window.scrollY !== 0) {
@@ -361,6 +408,12 @@ function nav(endValue, id, clickedElement, page) {
             startUpdatePercentage();
         } else {
             setTimeout(startUpdatePercentage, 1500);
+            setTimeout(function() {
+                mainIndex = lastIndex;
+                console.log('MAIN INDEX: ', mainIndex)
+            }, 1000);
+            savedImage.style.setProperty('--current-objectPos', getComputedStyle(savedImage).objectPosition);
+            savedImage.style.setProperty('--target-objectPos', getComputedStyle(document.getElementById(id)).objectPosition);
             savedImage.classList.add('reverseFullscreen');
             savedImage.classList.remove('fullscreen');
             button.classList.remove('slideDown');
@@ -432,7 +485,7 @@ function nav(endValue, id, clickedElement, page) {
                     all.style.height = `${page.clientHeight}px`;
 
                     page.querySelectorAll(visibleElements).forEach(title => {
-                        title.classList.add('visible');
+                        title.classList.add('visible');       
                         title.style.zIndex = "15";
                     });
                     buttons.forEach(projectsButton => { 
@@ -466,7 +519,7 @@ window.addEventListener('resize', function() {
     }
 });
 
-function menu(clickedElement, page) {
+function menu(clickedElement, page, id) {
     console.log("menu");
     const button = document.getElementsByClassName('button')[0];
 
@@ -500,7 +553,9 @@ function menu(clickedElement, page) {
                 child.classList.add("invisible");
             });
         });
-        if (savedImage) { 
+        if (savedImage) {
+            savedImage.style.setProperty('--current-objectPos', getComputedStyle(savedImage).objectPosition);
+            savedImage.style.setProperty('--target-objectPos', getComputedStyle(document.getElementById(id)).objectPosition);
             savedImage.classList.add('reverseFullscreen');
             savedImage.classList.remove('fullscreen');
         }
