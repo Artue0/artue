@@ -198,9 +198,10 @@ body {
   text-align: center;
   grid-column: span 9;
   min-width: 40vw;
-  height: 130px;
+  height: 140px;
+  border-radius: 20px;
   /* border: red 2px solid; */
-  gap: 35px;
+  /* gap: 35px; */
   position: relative;
 }
 
@@ -214,7 +215,7 @@ body {
   border: 3.5px white solid;
   border-radius: 6px;
   transition: 0.2s;
-  transform: translateY(45%);
+  transform: translateY(45%) scale(1.5);
 }
 
 .icon2:hover {
@@ -230,21 +231,31 @@ body {
 }
 
 .container {
-  transform: scale(1.5);
   height: 100%;
-  width: 90px;
+  width: 135px;
   display: flex;
   justify-content: center;
   color: white;
-  font-size: 14px;
+  font-size: 18px;
   font-family: Lucida Console, Monospace;
+  background-color: rgba(15, 15, 15, 0.95);
   /* margin-top: 1%; */
   /* border: red 2px solid; */
 }
 
+#bar .container:first-child {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+#bar .container:last-child {
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
 .text-container {
   white-space: nowrap;
-  transform: translateY(60%);
+  transform: translateY(70%);
 }
 
 .welcome {
@@ -611,11 +622,31 @@ h2 {
     grid-template-rows: auto auto auto;
     justify-content: center;
     align-items: center;
-    height: 500px;
+    height: 420px;
   }
   
   .container { grid-column: auto; }
+
   .seventh { grid-column: 2; }
+
+  #bar .container:nth-child(1) {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 0;
+  }
+  #bar .container:nth-child(3) {
+    border-top-right-radius: 20px;
+  }
+  #bar .container:nth-child(4) {
+    border-bottom-left-radius: 20px;
+  }
+  #bar .container:nth-child(6) {
+    border-bottom-right-radius: 20px;
+  }
+  #bar .container:nth-child(7) {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 0;
+  }
   
   .cGames {
     grid-column: 2 / span 1;
@@ -1018,9 +1049,10 @@ h2 {
   margin-bottom: 115vh;
 }
 
-.about-me-text, #hi, .websiteText, .websiteText2, .websiteText3, .basicText, .videoGameText, .container {
-  background-color: rgba(0, 0, 0, 0.9);
-  border-radius: 10px;
+.about-me-text, #hi, .websiteText, .websiteText2, .websiteText3, .basicText, .videoGameText {
+  background-color: rgba(15, 15, 15, 0.95);
+  border-radius: 20px;
+  padding: 50px;
 }
 
 .see, #about-me, .welcome {

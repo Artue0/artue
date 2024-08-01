@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import * as CANNON from 'cannon-es'
+import CannonDebugger from 'cannon-es-debugger';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 // import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
@@ -8,7 +10,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import './assets/FoundryGridnik-Regular.ttf';
 
 import './script.js';
-import { home, about, projects, portfolio, contact, music, games, savedImage, mainIndex } from './script.js';
+import { home, about, projects, portfolio, contact, music, games, savedImage, mainIndex, enableCode } from './script.js';
 // home(document.getElementById('iconPc').querySelector('i'));
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('iconPc').addEventListener('click', function() {home();});
@@ -74,50 +76,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 let renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-let renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('home') });
-renderer2.setSize(window.innerWidth, window.innerHeight, false);
-
-let renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById('about') });
-renderer3.setSize(window.innerWidth, window.innerHeight, false);
-
-let renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('projects') });
-renderer4.setSize(window.innerWidth, window.innerHeight, false);
-
-let renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('portfolio') });
-renderer5.setSize(window.innerWidth, window.innerHeight, false);
-const websiteScene = new THREE.Scene();
-const websiteCamera = new THREE.PerspectiveCamera(75, 50 / 34, 0.1, 1000);
-const whiteMaterialOutline = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true });
-const box_geometry2 = new THREE.BoxGeometry(2.03, 2.03, 2.03);
-const box2 = new THREE.Mesh(box_geometry2, whiteMaterialOutline);
-box2.position.z = -10;
-websiteScene.add(box2);
-
-let renderer6 = new THREE.WebGLRenderer({ canvas: document.getElementById('contact') });
-renderer6.setSize(window.innerWidth, window.innerHeight, false);
-
-let renderer7 = new THREE.WebGLRenderer({ canvas: document.getElementById('music') });
-renderer7.setSize(window.innerWidth, window.innerHeight, false);
-
-let renderer8 = new THREE.WebGLRenderer({ canvas: document.getElementById('games') });
-renderer8.setSize(window.innerWidth, window.innerHeight, false);
-
-const track = document.getElementById('image-track');
-document.body.appendChild(renderer.domElement);
-track.appendChild(renderer2.domElement);
-track.appendChild(renderer3.domElement);
-track.appendChild(renderer4.domElement);
-track.appendChild(renderer5.domElement);
-track.appendChild(renderer6.domElement);
-track.appendChild(renderer7.domElement);
-track.appendChild(renderer8.domElement);
-// document.getElementById('bg2').appendChild(renderer.domElement);
-
-// const controls = new OrbitControls(camera, renderer.domElement);
-
-let activeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg') });
-activeRenderer.setSize(window.innerWidth, window.innerHeight, false);
-
+//#region 
 var scrolled;
 const boxes = [];
 const frameLinesArray = [];
@@ -216,6 +175,100 @@ function updatePos(event) {
 document.addEventListener('mousemove', updatePos);
 
 camera.rotateX(THREE.MathUtils.degToRad(90));
+//#endregion
+
+
+
+
+
+const websiteScene = new THREE.Scene();
+websiteScene.position.z = -12;
+websiteScene.position.y = -5;
+websiteScene.rotateOnAxis.z = -Math.PI / 4;
+const websiteCamera = new THREE.PerspectiveCamera(75, 50 / 34, 0.1, 1000);
+
+const physicsWorld = new CANNON.World({
+    gravity: new CANNON.Vec3(0, -9.82, 0),
+});
+
+const groundBody = new CANNON.Body({
+    type: CANNON.Body.STATIC,
+    shape: new CANNON.Plane(),
+})
+
+groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+physicsWorld.addBody(groundBody);
+
+const sphereBody = new CANNON.Body({
+    mass: 5,
+    shape: new CANNON.Sphere(1),
+});
+sphereBody.position.set(0,7,0);
+physicsWorld.addBody(sphereBody);
+
+const sphereGeo = new THREE.SphereGeometry(1);
+const normalMaterial = new THREE.MeshNormalMaterial();
+const sphereMesh = new THREE.Mesh(sphereGeo, normalMaterial);
+websiteScene.add(sphereMesh);
+
+const boxBody = new CANNON.Body({
+    mass: 5,
+    shape: new CANNON.Box(new CANNON.Vec3(1, 1, 1)),
+});
+boxBody.position.set(1,10,0);
+physicsWorld.addBody(boxBody);
+
+const boxGeo = new THREE.BoxGeometry(2, 2, 2);
+const boxMesh2 = new THREE.Mesh(boxGeo, normalMaterial);
+websiteScene.add(boxMesh2);
+
+const Cannondebugger = new CannonDebugger(websiteScene, physicsWorld, {
+    color: 0xff0000,
+})
+
+
+
+let renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('home') });
+renderer2.setSize(window.innerWidth, window.innerHeight, false);
+const scene2 = new THREE.Scene();
+const camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+
+
+let renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById('about') });
+renderer3.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('projects') });
+renderer4.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('portfolio') });
+renderer5.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer6 = new THREE.WebGLRenderer({ canvas: document.getElementById('contact') });
+renderer6.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer7 = new THREE.WebGLRenderer({ canvas: document.getElementById('music') });
+renderer7.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer8 = new THREE.WebGLRenderer({ canvas: document.getElementById('games') });
+renderer8.setSize(window.innerWidth, window.innerHeight, false);
+
+const track = document.getElementById('image-track');
+document.body.appendChild(renderer.domElement);
+track.appendChild(renderer2.domElement);
+track.appendChild(renderer3.domElement);
+track.appendChild(renderer4.domElement);
+track.appendChild(renderer5.domElement);
+track.appendChild(renderer6.domElement);
+track.appendChild(renderer7.domElement);
+track.appendChild(renderer8.domElement);
+// document.getElementById('bg2').appendChild(renderer.domElement);
+
+// const controls = new OrbitControls(camera, renderer.domElement);
+
+let activeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg') });
+activeRenderer.setSize(window.innerWidth, window.innerHeight, false);
+
 window.addEventListener('scroll', function() {
     var scrollHeight = document.documentElement.scrollHeight;
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -241,19 +294,34 @@ window.addEventListener('scroll', function() {
 function animate() {
     requestAnimationFrame(animate);
 
-    boxes.forEach(boxInfo => {
-        const { boxMesh, rotationSpeed } = boxInfo;
-        boxMesh.rotation.x += rotationSpeed;
-        boxMesh.rotation.y += rotationSpeed;
-        boxMesh.rotation.z += rotationSpeed;
-    });
+    if (!enableCode) {
+        // box2.rotation.x += THREE.MathUtils.degToRad(0.1);
+        // box2.rotation.y += THREE.MathUtils.degToRad(0.1);
+        // box2.rotation.z += THREE.MathUtils.degToRad(0.1);
 
-    frameLinesArray.forEach(linesInfo => {
-        const { linesMesh, rotationSpeed } = linesInfo;
-        linesMesh.rotation.x += rotationSpeed;
-        linesMesh.rotation.y += rotationSpeed;
-        linesMesh.rotation.z += rotationSpeed;
-    });
+        physicsWorld.fixedStep();
+        Cannondebugger.update();
+        sphereMesh.position.copy(sphereBody.position);
+        sphereMesh.quaternion.copy(sphereBody.quaternion);
+        boxMesh2.position.copy(boxBody.position);
+        boxMesh2.quaternion.copy(boxBody.quaternion);
+    } else {
+        boxes.forEach(boxInfo => {
+            const { boxMesh, rotationSpeed } = boxInfo;
+            boxMesh.rotation.x += rotationSpeed;
+            boxMesh.rotation.y += rotationSpeed;
+            boxMesh.rotation.z += rotationSpeed;
+        });
+    
+        frameLinesArray.forEach(linesInfo => {
+            const { linesMesh, rotationSpeed } = linesInfo;
+            linesMesh.rotation.x += rotationSpeed;
+            linesMesh.rotation.y += rotationSpeed;
+            linesMesh.rotation.z += rotationSpeed;
+        });
+
+        renderer.render(scene, camera);
+    }
 
     // if (update) {
     //     updateRenderers = true;
@@ -272,25 +340,25 @@ function animate() {
                     console.log('mainIndex (main): ', mainIndex)
                     switch(true) {
                         case mainIndex === 0:
-                            renderer2.render(scene, camera);
+                            renderer2.render(websiteScene, websiteCamera);
                             break;
                         case mainIndex === 1:
-                            renderer3.render(scene, camera);
+                            renderer3.render(websiteScene, websiteCamera);
                             break;
                         case mainIndex === 2:
-                            renderer4.render(scene, camera);
+                            renderer4.render(websiteScene, websiteCamera);
                             break;
                         case mainIndex === 3:
-                            renderer5.render(scene, camera);
+                            renderer5.render(websiteScene, websiteCamera);
                             break;
                         case mainIndex === 4:
-                            renderer6.render(scene, camera);
+                            renderer6.render(websiteScene, websiteCamera);
                             break;
                         case mainIndex === 5:
-                            renderer7.render(scene, camera);
+                            renderer7.render(websiteScene, websiteCamera);
                             break;
                         case mainIndex === 6:
-                            renderer8.render(scene, camera);
+                            renderer8.render(websiteScene, websiteCamera);
                             break;
                     }
                 }
@@ -298,20 +366,41 @@ function animate() {
         }
     }
 
-    // renderer.dispose();
-    renderer.render(scene, camera);
-    // renderer5.render(scene, camera);
-    if(activeRenderer !== null) {activeRenderer.render(scene, camera);}
+    if(activeRenderer !== null) {
+        switch(true) {
+            case mainIndex === 0:
+                activeRenderer.render(websiteScene, websiteCamera);
+                break;
+            case mainIndex === 1:
+                activeRenderer.render(websiteScene, websiteCamera);
+                break;
+            case mainIndex === 2:
+                activeRenderer.render(websiteScene, websiteCamera);
+                break;
+            case mainIndex === 3:
+                activeRenderer.render(websiteScene, websiteCamera);
+                break;
+            case mainIndex === 4:
+                activeRenderer.render(websiteScene, websiteCamera);
+                break;
+            case mainIndex === 5:
+                activeRenderer.render(websiteScene, websiteCamera);
+                break;
+            case mainIndex === 6:
+                activeRenderer.render(websiteScene, websiteCamera);
+                break;
+        }
+    }
 }
 
-renderer.render(scene, camera);
-renderer2.render(scene, camera);
-renderer3.render(scene, camera);
-renderer4.render(scene, camera);
-renderer5.render(scene, camera);
-renderer6.render(scene, camera);
-renderer7.render(scene, camera);
-renderer8.render(scene, camera);
+renderer.render(websiteScene, websiteCamera);
+renderer2.render(websiteScene, websiteCamera);
+renderer3.render(websiteScene, websiteCamera);
+renderer4.render(websiteScene, websiteCamera);
+renderer5.render(websiteScene, websiteCamera);
+renderer6.render(websiteScene, websiteCamera);
+renderer7.render(websiteScene, websiteCamera);
+renderer8.render(websiteScene, websiteCamera);
 
 animate();
 

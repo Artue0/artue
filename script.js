@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.addEventListener('mousemove', function (event) {
         handleOnMove(event);
+        console.log(isMoving)
     });
 
     window.addEventListener('touchmove', function (event) {
