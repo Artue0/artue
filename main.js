@@ -184,7 +184,6 @@ camera.rotateX(THREE.MathUtils.degToRad(90));
 const websiteScene = new THREE.Scene();
 const websiteCamera = new THREE.PerspectiveCamera(75, 50 / 34, 0.1, 1000);
 websiteCamera.position.z = 20;
-websiteCamera.position.y = 5;
 // controls.update();
 
 const physicsWorld = new CANNON.World({
@@ -195,13 +194,13 @@ const Cannondebugger = new CannonDebugger(websiteScene, physicsWorld, {
     color: 0xffffff,
 })
 
-const groundBody = new CANNON.Body({
-    type: CANNON.Body.STATIC,
-    shape: new CANNON.Plane(),
-})
+// const groundBody = new CANNON.Body({
+//     type: CANNON.Body.STATIC,
+//     shape: new CANNON.Plane(),
+// })
 
-groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-physicsWorld.addBody(groundBody);
+// groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+// physicsWorld.addBody(groundBody);
 
 
 
@@ -216,26 +215,10 @@ function createStaticPlane(position, rotation) {
     physicsWorld.addBody(groundBody);
 }
 
-createStaticPlane(new THREE.Vector3(0, 0, 0), new THREE.Euler(-Math.PI / 2, 0, 0));
-// createStaticPlane(new THREE.Vector3(15, 15, 0), new THREE.Euler(0, -Math.PI / 2, 0));
-// createStaticPlane(new THREE.Vector3(-25, 15, 0), new THREE.Euler(0, -Math.PI / 2, 0));
+createStaticPlane(new THREE.Vector3(0, 0, -25), new THREE.Euler(0, 0, 0));
+createStaticPlane(new THREE.Vector3(25, 0, 0), new THREE.Euler(0, -Math.PI / 2, 0));
+createStaticPlane(new THREE.Vector3(-25, 0, 0), new THREE.Euler(0, Math.PI / 2, 0));
 
-
-
-const mouse = new THREE.Vector2();
-const raycaster = new THREE.Raycaster();
-const intersectionPoint = new THREE.Vector3();
-const planeNormal = new THREE.Vector3();
-const plane = new THREE.Plane();
-
-document.addEventListener('mousemove', function(e) {
-    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, websiteCamera);
-    planeNormal.copy(websiteCamera.position).normalize();
-    plane.setFromNormalAndCoplanarPoint(planeNormal, websiteScene.position);
-    raycaster.ray.intersectPlane(plane, intersectionPoint);
-});
 
 const physicsMaterial = new CANNON.Material();
 const physicsContactMaterial = new CANNON.ContactMaterial(
@@ -247,24 +230,52 @@ physicsWorld.addContactMaterial(physicsContactMaterial);
 
 const spheres = [];
 const sphereBodies = [];
+
+// for (let i = 0; i < 300; i++) {
+//     const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+//     const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+//     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+//     sphere.position.set(Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 50 + 5);
+//     websiteScene.add(sphere);
+//     spheres.push(sphere);
+
+//     const sphereBody = new CANNON.Body({
+//         mass: 1,
+//         material: physicsMaterial,
+//         shape: new CANNON.Sphere(radius),
+//     });
+//     sphereBody.position.copy(sphere.position);
+//     physicsWorld.addBody(sphereBody);
+//     sphereBodies.push(sphereBody);
+// }
+
 const radius = 0.5;
+const spacing = 5;
+const numBallsPerSide = 7;
+for (var x = 0; x < numBallsPerSide; x++) {
+    for (var y = 0; y < numBallsPerSide; y++) {
+        for (var z = 0; z < numBallsPerSide; z++) {
+            const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+            const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            sphere.position.set(
+                x * spacing - (numBallsPerSide - 1) * spacing / 2,
+                y * spacing - (numBallsPerSide - 1) * spacing / 2,
+                z * spacing - (numBallsPerSide - 1) * spacing / 2
+            );
+            websiteScene.add(sphere);
+            spheres.push(sphere);
 
-for (let i = 0; i < 300; i++) {
-    const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
-    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    sphere.position.set(Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 50 + 5);
-    websiteScene.add(sphere);
-    spheres.push(sphere);
-
-    const sphereBody = new CANNON.Body({
-        mass: 1,
-        material: physicsMaterial,
-        shape: new CANNON.Sphere(radius),
-    });
-    sphereBody.position.copy(sphere.position);
-    physicsWorld.addBody(sphereBody);
-    sphereBodies.push(sphereBody);
+            const sphereBody = new CANNON.Body({
+                mass: 1,
+                material: physicsMaterial,
+                shape: new CANNON.Sphere(radius),
+            });
+            sphereBody.position.copy(sphere.position);
+            physicsWorld.addBody(sphereBody);
+            sphereBodies.push(sphereBody);
+        }
+    }
 }
 
 
@@ -310,51 +321,61 @@ track.appendChild(renderer8.domElement);
 let activeRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg') });
 activeRenderer.setSize(window.innerWidth, window.innerHeight, false);
 
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function(e) {
     var scrollHeight = document.documentElement.scrollHeight;
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     var clientHeight = document.documentElement.clientHeight;
 
     scrolled = (scrollTop / (scrollHeight - clientHeight)) * 100;
 
-    if (scrolled >= 0 && scrolled <= 30) {
-        camera.rotation.x = THREE.MathUtils.degToRad(90 * (1 - scrolled / 30));
-    } else if (scrolled > 30 && scrolled <= 60) {
-        camera.rotation.x = 0;
-        camera.position.y = -100 * (scrolled / 30 - 1);
-    } else if (scrolled > 60 && scrolled <= 90) {
-        camera.position.y = -100;
-        camera.position.z = -150 * (scrolled / 30 - 2);
+    if (enableCode) {
+        if (scrolled >= 0 && scrolled <= 30) {
+            camera.rotation.x = THREE.MathUtils.degToRad(90 * (1 - scrolled / 30));
+        } else if (scrolled > 30 && scrolled <= 60) {
+            camera.rotation.x = 0;
+            camera.position.y = -100 * (scrolled / 30 - 1);
+        } else if (scrolled > 60 && scrolled <= 90) {
+            camera.position.y = -100;
+            camera.position.z = -150 * (scrolled / 30 - 2);
+        } else {
+            camera.position.z = -150;
+            camera.position.y = -100;
+            camera.rotation.x = 0;
+        }
     } else {
-        camera.position.z = -150;
-        camera.position.y = -100;
-        camera.rotation.x = 0;
+        websiteCamera.position.y = -scrolled;
+        updateIntersectionPoint({ clientX: mouse.x, clientY: mouse.y });
     }
+});
+
+
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+const intersectionPoint = new THREE.Vector3();
+const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+
+function updateIntersectionPoint(e) {
+    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, websiteCamera);
+    const intersect = raycaster.ray.intersectPlane(plane, intersectionPoint);
+}
+
+document.addEventListener('mousemove', function(e) {
+    updateIntersectionPoint(e);
+});
+document.addEventListener('onscroll', function(e) {
+    updateIntersectionPoint(e);
 });
 
 function animate() {
     requestAnimationFrame(animate);
 
     if (!enableCode) {
-        // box2.rotation.x += THREE.MathUtils.degToRad(0.1);
-        // box2.rotation.y += THREE.MathUtils.degToRad(0.1);
-        // box2.rotation.z += THREE.MathUtils.degToRad(0.1);
 
         physicsWorld.fixedStep();
         Cannondebugger.update();
 
-        // for (let i = 0; i < spheres.length; i++) {
-        //     const sphereBody = sphereBodies[i];
-        //     const direction = new CANNON.Vec3(
-        //         intersectionPoint.x - sphereBody.position.x,
-        //         intersectionPoint.y - sphereBody.position.y,
-        //         intersectionPoint.z - sphereBody.position.z
-        //     );
-        //     // console.log(planeIntersect)
-        //     direction.normalize();
-        //     direction.scale(15, direction); // Scale the force to make it noticeable
-        //     sphereBody.applyForce(direction, sphereBody.position);
-        // }
         for (let i = 0; i < spheres.length; i++) {
             const sphereBody = sphereBodies[i];
             const direction = new CANNON.Vec3(
@@ -363,10 +384,10 @@ function animate() {
                 intersectionPoint.z - sphereBody.position.z
             );
             const distance = direction.length();
-            if (distance > 0.1) { // Only apply force if it's significant
-                const forceMagnitude = 100 / (1 + distance); // Force decreases as distance increases
+            if (distance > 0.1) {
+                const forceMagnitude = 100 / (1 + distance);
                 direction.normalize();
-                direction.scale(forceMagnitude, direction); // Scale the force
+                direction.scale(forceMagnitude, direction);
                 sphereBody.applyForce(direction, sphereBody.position);
             }
         }
@@ -463,6 +484,7 @@ function animate() {
     }
 }
 
+Cannondebugger.update();
 renderer.render(websiteScene, websiteCamera);
 renderer2.render(websiteScene, websiteCamera);
 renderer3.render(websiteScene, websiteCamera);
