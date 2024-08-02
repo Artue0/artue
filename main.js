@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 // import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 // import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
 // import { Line2 } from "three/examples/jsm/lines/Line2";
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import './assets/FoundryGridnik-Regular.ttf';
 
@@ -182,14 +182,18 @@ camera.rotateX(THREE.MathUtils.degToRad(90));
 
 
 const websiteScene = new THREE.Scene();
-websiteScene.position.z = -12;
-websiteScene.position.y = -5;
-websiteScene.rotateOnAxis.z = -Math.PI / 4;
 const websiteCamera = new THREE.PerspectiveCamera(75, 50 / 34, 0.1, 1000);
+websiteCamera.position.z = 20;
+websiteCamera.position.y = 3;
+// controls.update();
 
 const physicsWorld = new CANNON.World({
-    gravity: new CANNON.Vec3(0, -9.82, 0),
+    gravity: new CANNON.Vec3(0, 0, 0),
 });
+
+const Cannondebugger = new CannonDebugger(websiteScene, physicsWorld, {
+    color: 0xffffff,
+})
 
 const groundBody = new CANNON.Body({
     type: CANNON.Body.STATIC,
@@ -199,32 +203,60 @@ const groundBody = new CANNON.Body({
 groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
 physicsWorld.addBody(groundBody);
 
-const sphereBody = new CANNON.Body({
-    mass: 5,
-    shape: new CANNON.Sphere(1),
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+const intersectionPoint = new THREE.Vector3();
+const planeNormal = new THREE.Vector3();
+const plane = new THREE.Plane();
+
+document.addEventListener('mousemove', function(e) {
+    // Convert mouse coordinates to normalized device coordinates (-1 to +1) for both components
+    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+    // Update the raycaster with the camera and mouse position
+    raycaster.setFromCamera(mouse, websiteCamera);
+
+    // Compute the plane's normal and position
+    planeNormal.copy(websiteCamera.position).normalize();
+    plane.setFromNormalAndCoplanarPoint(planeNormal, websiteScene.position);
+
+    // Calculate the intersection point
+    raycaster.ray.intersectPlane(plane, intersectionPoint);
+
+    // Log the intersection point
+    console.log('intersectionPoint: ', intersectionPoint);
 });
-sphereBody.position.set(0,7,0);
-physicsWorld.addBody(sphereBody);
 
-const sphereGeo = new THREE.SphereGeometry(1);
-const normalMaterial = new THREE.MeshNormalMaterial();
-const sphereMesh = new THREE.Mesh(sphereGeo, normalMaterial);
-websiteScene.add(sphereMesh);
+const physicsMaterial = new CANNON.Material();
+const physicsContactMaterial = new CANNON.ContactMaterial(
+    physicsMaterial,
+    physicsMaterial,
+    { friction: 0.3, restitution: 0.7 }
+);
+physicsWorld.addContactMaterial(physicsContactMaterial);
 
-const boxBody = new CANNON.Body({
-    mass: 5,
-    shape: new CANNON.Box(new CANNON.Vec3(1, 1, 1)),
-});
-boxBody.position.set(1,10,0);
-physicsWorld.addBody(boxBody);
+const spheres = [];
+const sphereBodies = [];
+const radius = 0.5;
 
-const boxGeo = new THREE.BoxGeometry(2, 2, 2);
-const boxMesh2 = new THREE.Mesh(boxGeo, normalMaterial);
-websiteScene.add(boxMesh2);
+for (let i = 0; i < 100; i++) {
+    const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.position.set(Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 5 + 5);
+    websiteScene.add(sphere);
+    spheres.push(sphere);
 
-const Cannondebugger = new CannonDebugger(websiteScene, physicsWorld, {
-    color: 0xff0000,
-})
+    const sphereBody = new CANNON.Body({
+        mass: 1,
+        material: physicsMaterial,
+        shape: new CANNON.Sphere(radius),
+    });
+    sphereBody.position.copy(sphere.position);
+    physicsWorld.addBody(sphereBody);
+    sphereBodies.push(sphereBody);
+}
 
 
 
@@ -301,10 +333,39 @@ function animate() {
 
         physicsWorld.fixedStep();
         Cannondebugger.update();
-        sphereMesh.position.copy(sphereBody.position);
-        sphereMesh.quaternion.copy(sphereBody.quaternion);
-        boxMesh2.position.copy(boxBody.position);
-        boxMesh2.quaternion.copy(boxBody.quaternion);
+
+        // for (let i = 0; i < spheres.length; i++) {
+        //     const sphereBody = sphereBodies[i];
+        //     const direction = new CANNON.Vec3(
+        //         intersectionPoint.x - sphereBody.position.x,
+        //         intersectionPoint.y - sphereBody.position.y,
+        //         intersectionPoint.z - sphereBody.position.z
+        //     );
+        //     // console.log(planeIntersect)
+        //     direction.normalize();
+        //     direction.scale(15, direction); // Scale the force to make it noticeable
+        //     sphereBody.applyForce(direction, sphereBody.position);
+        // }
+        for (let i = 0; i < spheres.length; i++) {
+            const sphereBody = sphereBodies[i];
+            const direction = new CANNON.Vec3(
+                intersectionPoint.x - sphereBody.position.x,
+                intersectionPoint.y - sphereBody.position.y,
+                intersectionPoint.z - sphereBody.position.z
+            );
+            const distance = direction.length();
+            if (distance > 0.1) { // Only apply force if it's significant
+                const forceMagnitude = 100 / (1 + distance); // Force decreases as distance increases
+                direction.normalize();
+                direction.scale(forceMagnitude, direction); // Scale the force
+                sphereBody.applyForce(direction, sphereBody.position);
+            }
+        }
+
+        for (let i = 0; i < spheres.length; i++) {
+            spheres[i].position.copy(sphereBodies[i].position);
+            spheres[i].quaternion.copy(sphereBodies[i].quaternion);
+        }
     } else {
         boxes.forEach(boxInfo => {
             const { boxMesh, rotationSpeed } = boxInfo;
