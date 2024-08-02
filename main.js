@@ -344,7 +344,7 @@ window.addEventListener('scroll', function(e) {
         }
     } else {
         websiteCamera.position.y = -scrolled;
-        updateIntersectionPoint({ clientX: mouse.x, clientY: mouse.y });
+        // updateIntersectionPoint({ clientX: mouse.x, clientY: mouse.y });
     }
 });
 
@@ -364,9 +364,9 @@ function updateIntersectionPoint(e) {
 document.addEventListener('mousemove', function(e) {
     updateIntersectionPoint(e);
 });
-document.addEventListener('onscroll', function(e) {
-    updateIntersectionPoint(e);
-});
+// document.addEventListener('onscroll', function(e) {
+//     updateIntersectionPoint(e);
+// });
 
 function animate() {
     requestAnimationFrame(animate);
