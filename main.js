@@ -10,7 +10,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import './assets/FoundryGridnik-Regular.ttf';
 
 import './script.js';
-import { home, about, projects, portfolio, contact, music, games, savedImage, mainIndex, enableCode } from './script.js';
+import { home, about, projects, portfolio, contact, music, games, savedImage, mainIndex, enableCode, isMoving } from './script.js';
 // home(document.getElementById('iconPc').querySelector('i'));
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('iconPc').addEventListener('click', function() {home();});
@@ -215,9 +215,10 @@ function createStaticPlane(position, rotation) {
     physicsWorld.addBody(groundBody);
 }
 
-createStaticPlane(new THREE.Vector3(0, 0, -25), new THREE.Euler(0, 0, 0));
-createStaticPlane(new THREE.Vector3(25, 0, 0), new THREE.Euler(0, -Math.PI / 2, 0));
-createStaticPlane(new THREE.Vector3(-25, 0, 0), new THREE.Euler(0, Math.PI / 2, 0));
+createStaticPlane(new THREE.Vector3(0, 50, -25), new THREE.Euler(0, 0, 0));
+createStaticPlane(new THREE.Vector3(25, 50, 0), new THREE.Euler(0, -Math.PI / 2, 0));
+createStaticPlane(new THREE.Vector3(-25, 50, 0), new THREE.Euler(0, Math.PI / 2, 0));
+createStaticPlane(new THREE.Vector3(0, -110, 0), new THREE.Euler(-Math.PI / 2, 0, 0));
 
 
 const physicsMaterial = new CANNON.Material();
@@ -230,24 +231,33 @@ physicsWorld.addContactMaterial(physicsContactMaterial);
 
 const spheres = [];
 const sphereBodies = [];
+const polygons = [];
+const polygonsBodies = [];
 
-// for (let i = 0; i < 300; i++) {
-//     const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
-//     const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-//     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-//     sphere.position.set(Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 50 + 5);
-//     websiteScene.add(sphere);
-//     spheres.push(sphere);
+for (let i = 0; i < 40; i++) {
+    const scale = Math.random() * 2 + 1;
+    const rotation = {x: Math.random() * 360, y: Math.random() * 360, z: Math.random() * 360};
+    const polygonGeometry = new THREE.BoxGeometry(scale * 2, scale * 2, scale * 2);
+    const polygon = new THREE.Mesh(polygonGeometry, blackMaterial);
+    polygon.position.set(Math.random() * 50 - 25, Math.random() * -60 - 20, Math.random() * 0);
+    polygon.rotation.set(rotation.x, rotation.y, rotation.z);
+    websiteScene.add(polygon);
+    polygons.push(polygon);
 
-//     const sphereBody = new CANNON.Body({
-//         mass: 1,
-//         material: physicsMaterial,
-//         shape: new CANNON.Sphere(radius),
-//     });
-//     sphereBody.position.copy(sphere.position);
-//     physicsWorld.addBody(sphereBody);
-//     sphereBodies.push(sphereBody);
-// }
+    const rotationInRadians = {
+        x: rotation.x * (Math.PI / 180),
+        y: rotation.y * (Math.PI / 180),
+        z: rotation.z * (Math.PI / 180)
+    };
+    const polygonBody = new CANNON.Body({
+        type: CANNON.Body.STATIC,
+        shape: new CANNON.Box(new CANNON.Vec3(scale, scale, scale)),
+    });
+    polygonBody.position.copy(polygon.position);
+    polygonBody.quaternion.setFromEuler(rotationInRadians.x, rotationInRadians.y, rotationInRadians.z)
+    physicsWorld.addBody(polygonBody);
+    polygonsBodies.push(polygonBody);
+}
 
 const radius = 0.5;
 const spacing = 5;
@@ -396,7 +406,13 @@ function animate() {
             spheres[i].position.copy(sphereBodies[i].position);
             spheres[i].quaternion.copy(sphereBodies[i].quaternion);
         }
-    } else {
+
+        for (let i = 0; i < polygons.length; i++) {
+            polygons[i].position.copy(polygonsBodies[i].position);
+            polygons[i].quaternion.copy(polygonsBodies[i].quaternion);
+        }
+    } 
+    if (enableCode && !isMoving) {
         boxes.forEach(boxInfo => {
             const { boxMesh, rotationSpeed } = boxInfo;
             boxMesh.rotation.x += rotationSpeed;
