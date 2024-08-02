@@ -184,7 +184,7 @@ camera.rotateX(THREE.MathUtils.degToRad(90));
 const websiteScene = new THREE.Scene();
 const websiteCamera = new THREE.PerspectiveCamera(75, 50 / 34, 0.1, 1000);
 websiteCamera.position.z = 20;
-websiteCamera.position.y = 3;
+websiteCamera.position.y = 5;
 // controls.update();
 
 const physicsWorld = new CANNON.World({
@@ -203,6 +203,25 @@ const groundBody = new CANNON.Body({
 groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
 physicsWorld.addBody(groundBody);
 
+
+
+function createStaticPlane(position, rotation) {
+    const groundBody = new CANNON.Body({
+        type: CANNON.Body.STATIC,
+        shape: new CANNON.Plane(),
+    })
+
+    groundBody.quaternion.setFromEuler(rotation.x, rotation.y, rotation.z);
+    groundBody.position.copy(position);
+    physicsWorld.addBody(groundBody);
+}
+
+createStaticPlane(new THREE.Vector3(0, 0, 0), new THREE.Euler(-Math.PI / 2, 0, 0));
+// createStaticPlane(new THREE.Vector3(15, 15, 0), new THREE.Euler(0, -Math.PI / 2, 0));
+// createStaticPlane(new THREE.Vector3(-25, 15, 0), new THREE.Euler(0, -Math.PI / 2, 0));
+
+
+
 const mouse = new THREE.Vector2();
 const raycaster = new THREE.Raycaster();
 const intersectionPoint = new THREE.Vector3();
@@ -210,22 +229,12 @@ const planeNormal = new THREE.Vector3();
 const plane = new THREE.Plane();
 
 document.addEventListener('mousemove', function(e) {
-    // Convert mouse coordinates to normalized device coordinates (-1 to +1) for both components
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-    // Update the raycaster with the camera and mouse position
     raycaster.setFromCamera(mouse, websiteCamera);
-
-    // Compute the plane's normal and position
     planeNormal.copy(websiteCamera.position).normalize();
     plane.setFromNormalAndCoplanarPoint(planeNormal, websiteScene.position);
-
-    // Calculate the intersection point
     raycaster.ray.intersectPlane(plane, intersectionPoint);
-
-    // Log the intersection point
-    console.log('intersectionPoint: ', intersectionPoint);
 });
 
 const physicsMaterial = new CANNON.Material();
@@ -240,11 +249,11 @@ const spheres = [];
 const sphereBodies = [];
 const radius = 0.5;
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 300; i++) {
     const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
     const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    sphere.position.set(Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 5 + 5);
+    sphere.position.set(Math.random() * 100 - 50, Math.random() * 100 - 50, Math.random() * 50 + 5);
     websiteScene.add(sphere);
     spheres.push(sphere);
 
