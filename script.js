@@ -114,39 +114,47 @@ function handleImageClick(event) {
             case selectedImage.classList.contains("cPc") || selectedImage.classList.contains("imgSetup"):
                 selectedIcon = document.getElementById("iconPc").querySelector("i");
                 page = pcPage;
-                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 0;}
+                mainIndex = 0;
+                index = 0;
                 break;
             case selectedImage.classList.contains("cCats") || selectedImage.classList.contains("imgCats"):
                 selectedIcon = document.getElementById("iconCats").querySelector("i");
                 page = catPage;
-                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 1}
+                mainIndex = 1;
+                index = 1;
                 // togglePlayPause();
                 break;
             case selectedImage.classList.contains("cProjects") || selectedImage.classList.contains("imgProjects"):
                 selectedIcon = document.getElementById("iconProjects").querySelector("i");
                 page = projectsPage;
-                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 2;}
+                mainIndex = 2;
+                index = 2;
                 showButtons = true;
                 break;
             case selectedImage.classList.contains("cWebsite") || selectedImage.classList.contains("imgWebsite"):
                 selectedIcon = document.getElementById("iconWebsite").querySelector("i");
                 page = websitePage;
-                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 3;}
+                mainIndex = 3;
+                index = 3;
                 break;
             case selectedImage.classList.contains("cLinks") || selectedImage.classList.contains("imgLinks"):
                 selectedIcon = document.getElementById("iconLinks").querySelector("i");
                 page = linksPage;
-                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 4;}
+                mainIndex = 4;
+                index = 4;
                 break;
             case selectedImage.classList.contains("cMusic") || selectedImage.classList.contains("imgMusic"):
                 selectedIcon = document.getElementById("iconMusic").querySelector("i");
                 page = musicPage;
-                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 5;}
+                mainIndex = 5;
+                index = 5;
                 break;
             case selectedImage.classList.contains("cGames") || selectedImage.classList.contains("imgGames"):
                 selectedIcon = document.getElementById("iconGames").querySelector("i");
                 page = gamesPage;
-                if (!selectedImage.parentNode.classList.contains("icon2")) {index = 6;}
+                mainIndex = 6;
+                index = 6;
+                // if (!selectedImage.parentNode.classList.contains("icon2")) {index = 6;}
                 break;
         }
         if (selectedImage.classList.contains("image")){

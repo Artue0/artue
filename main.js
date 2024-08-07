@@ -63,7 +63,6 @@ const urls = [
 
 
 const loadingManager = new THREE.LoadingManager();
-
 loadingManager.onProgress = function(url, loaded, total) {document.getElementById("progressBarContainer").querySelector("label").innerText = `[${Math.round((loaded / total) * 100)}%]`;}
 loadingManager.onLoad = function() {document.getElementById('progressBarContainer').style.display = "none";}
 
@@ -83,6 +82,17 @@ const frameLinesArray = [];
 let changeCanvas = true;
 let updateRenderers = false;
 
+const addFrame = (mesh, scaleFactor) => {
+    const geometry = mesh.geometry;
+    const frameGeometry = new THREE.EdgesGeometry(geometry);
+    const frame = new THREE.LineSegments(frameGeometry, whiteMaterial);
+    frame.position.copy(mesh.position);
+    frame.scale.copy(mesh.scale);
+    frame.rotation.copy(mesh.rotation);
+    frame.scale.multiplyScalar(1 + scaleFactor);
+    return frame;
+}
+
 for (let i = 0; i < 700; i++) {
     const [x, y, z, x2, y2, z2] = Array(6).fill().map(() => THREE.MathUtils.randFloatSpread(300));
     const [x3, y3, z3] = Array(6).fill().map(() => THREE.MathUtils.randFloatSpread(400));
@@ -95,29 +105,22 @@ for (let i = 0; i < 700; i++) {
     const box_geometry = new THREE.BoxGeometry(2.03, 2.03, 2.03);
     const box = new THREE.Mesh(box_geometry, blackMaterial);
 
-    const frameGeometry = new THREE.BoxGeometry(2, 2, 2);
-    const frameEdges = new THREE.EdgesGeometry(frameGeometry);
-    const frameLines = new THREE.LineSegments(frameEdges, whiteMaterial);
-
-    frameLines.rotation.set(rot_x, rot_y, rot_z);
-    frameLines.scale.set(scale, scale, scale);
-    frameLines.position.set(x2, y2, z2);
-
-    frameLines.scale.multiplyScalar(1 + 0.03);
-
     box.rotation.set(rot_x, rot_y, rot_z);
     box.scale.set(scale, scale, scale);
     box.position.set(x2, y2, z2);
 
     star.position.set(x, y, z);
     smallStar.position.set(x3, y3, z3);
+    
+    const frame = addFrame(box, 0.03);
+    scene.add(frame);
 
-    scene.add(star, smallStar, box, frameLines);
+    scene.add(star, smallStar, box);
 
     const rotationSpeed = Math.random() * 0.005;
 
     boxes.push({ boxMesh: box, rotationSpeed: rotationSpeed });
-    frameLinesArray.push({ linesMesh: frameLines, rotationSpeed: rotationSpeed })
+    frameLinesArray.push({ linesMesh: frame, rotationSpeed: rotationSpeed })
 }
 
 const assetLoader = new GLTFLoader(loadingManager);
@@ -190,10 +193,6 @@ const physicsWorld = new CANNON.World({
     gravity: new CANNON.Vec3(0, 0, 0),
 });
 
-const Cannondebugger = new CannonDebugger(websiteScene, physicsWorld, {
-    color: 0xffffff,
-})
-
 // const groundBody = new CANNON.Body({
 //     type: CANNON.Body.STATIC,
 //     shape: new CANNON.Plane(),
@@ -204,7 +203,7 @@ const Cannondebugger = new CannonDebugger(websiteScene, physicsWorld, {
 
 
 
-function createStaticPlane(position, rotation) {
+function createStaticPlane(position, rotation, addWireframe) {
     const groundBody = new CANNON.Body({
         type: CANNON.Body.STATIC,
         shape: new CANNON.Plane(),
@@ -213,12 +212,18 @@ function createStaticPlane(position, rotation) {
     groundBody.quaternion.setFromEuler(rotation.x, rotation.y, rotation.z);
     groundBody.position.copy(position);
     physicsWorld.addBody(groundBody);
+    if (addWireframe) {
+        const plane = new THREE.Mesh(new THREE.PlaneGeometry( 10, 10, 10, 10 ), new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true, side: THREE.DoubleSide }));
+        plane.position.copy(groundBody.position);
+        plane.quaternion.copy(groundBody.quaternion);
+        websiteScene.add(plane);
+    }
 }
 
-createStaticPlane(new THREE.Vector3(0, 50, -25), new THREE.Euler(0, 0, 0));
-createStaticPlane(new THREE.Vector3(25, 50, 0), new THREE.Euler(0, -Math.PI / 2, 0));
-createStaticPlane(new THREE.Vector3(-25, 50, 0), new THREE.Euler(0, Math.PI / 2, 0));
-createStaticPlane(new THREE.Vector3(0, -110, 0), new THREE.Euler(-Math.PI / 2, 0, 0));
+createStaticPlane(new THREE.Vector3(0, 50, -25), new THREE.Euler(0, 0, 0), false);
+createStaticPlane(new THREE.Vector3(25, 50, 0), new THREE.Euler(0, -Math.PI / 2, 0), false);
+createStaticPlane(new THREE.Vector3(-25, 50, 0), new THREE.Euler(0, Math.PI / 2, 0), false);
+createStaticPlane(new THREE.Vector3(0, -110, 0), new THREE.Euler(-Math.PI / 2, 0, 0), true);
 
 
 const physicsMaterial = new CANNON.Material();
@@ -231,8 +236,32 @@ physicsWorld.addContactMaterial(physicsContactMaterial);
 
 const spheres = [];
 const sphereBodies = [];
+const sphereOutlines = [];
 const polygons = [];
 const polygonsBodies = [];
+const polygonsOutlines = [];
+
+const solidify = (mesh, THICKNESS) => {
+    const geometry = mesh.geometry;
+    const material = new THREE.ShaderMaterial({
+        vertexShader:  /* glsl */ `
+            void main() {
+                vec3 newPosition = position + normal * ${THICKNESS};
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1);
+            }
+        `,
+        fragmentShader:  /* glsl */ `
+            void main() {
+                gl_FragColor = vec4(1, 1, 1, 1);
+            }
+        `,
+        side: THREE.BackSide
+    })
+
+    const outline = new THREE.Mesh(geometry, material);
+    websiteScene.add(outline);
+    return outline;
+}
 
 for (let i = 0; i < 40; i++) {
     const scale = Math.random() * 2 + 1;
@@ -241,8 +270,11 @@ for (let i = 0; i < 40; i++) {
     const polygon = new THREE.Mesh(polygonGeometry, blackMaterial);
     polygon.position.set(Math.random() * 50 - 25, Math.random() * -60 - 20, Math.random() * 0);
     polygon.rotation.set(rotation.x, rotation.y, rotation.z);
+    const frame = addFrame(polygon, 0.03);
+    websiteScene.add(frame);
     websiteScene.add(polygon);
     polygons.push(polygon);
+    polygonsOutlines.push(frame);
 
     const rotationInRadians = {
         x: rotation.x * (Math.PI / 180),
@@ -273,6 +305,8 @@ for (var x = 0; x < numBallsPerSide; x++) {
                 y * spacing - (numBallsPerSide - 1) * spacing / 2,
                 z * spacing - (numBallsPerSide - 1) * spacing / 2
             );
+            const outline = solidify(sphere, 0.05);
+            sphereOutlines.push(outline);
             websiteScene.add(sphere);
             spheres.push(sphere);
 
@@ -384,7 +418,6 @@ function animate() {
     if (!enableCode) {
 
         physicsWorld.fixedStep();
-        Cannondebugger.update();
 
         for (let i = 0; i < spheres.length; i++) {
             const sphereBody = sphereBodies[i];
@@ -405,11 +438,15 @@ function animate() {
         for (let i = 0; i < spheres.length; i++) {
             spheres[i].position.copy(sphereBodies[i].position);
             spheres[i].quaternion.copy(sphereBodies[i].quaternion);
+            sphereOutlines[i].position.copy(sphereBodies[i].position);
+            sphereOutlines[i].quaternion.copy(sphereBodies[i].quaternion);
         }
 
         for (let i = 0; i < polygons.length; i++) {
             polygons[i].position.copy(polygonsBodies[i].position);
             polygons[i].quaternion.copy(polygonsBodies[i].quaternion);
+            polygonsOutlines[i].position.copy(polygonsBodies[i].position);
+            polygonsOutlines[i].quaternion.copy(polygonsBodies[i].quaternion);
         }
     } 
     if (enableCode && !isMoving) {
@@ -500,7 +537,13 @@ function animate() {
     }
 }
 
-Cannondebugger.update();
+for (let i = 0; i < spheres.length; i++) {
+    spheres[i].position.copy(sphereBodies[i].position);
+    spheres[i].quaternion.copy(sphereBodies[i].quaternion);
+    sphereOutlines[i].position.copy(sphereBodies[i].position);
+    sphereOutlines[i].quaternion.copy(sphereBodies[i].quaternion);
+}
+
 renderer.render(websiteScene, websiteCamera);
 renderer2.render(websiteScene, websiteCamera);
 renderer3.render(websiteScene, websiteCamera);
