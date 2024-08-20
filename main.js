@@ -1,10 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es'
-import CannonDebugger from 'cannon-es-debugger';
+import { gsap } from "gsap";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-// import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
-// import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
-// import { Line2 } from "three/examples/jsm/lines/Line2";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 import './assets/FoundryGridnik-Regular.ttf';
@@ -47,7 +44,6 @@ const urls = [
     new URL('assets/models/E.glb', import.meta.url)
 ];
 
-
 // import videoSrc1 from './assets/videos/1.mp4';
 // import videoSrc2 from './assets/videos/2.mp4';
 // import videoSrc3 from './assets/videos/3.mov';
@@ -75,6 +71,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 let renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
+//mainScene
 //#region 
 var scrolled;
 const boxes = [];
@@ -180,28 +177,270 @@ document.addEventListener('mousemove', updatePos);
 camera.rotateX(THREE.MathUtils.degToRad(90));
 //#endregion
 
+let renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('home') });
+renderer2.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById('about') });
+renderer3.setSize(window.innerWidth, window.innerHeight, false);
+
+let renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('projects') });
+renderer4.setSize(window.innerWidth, window.innerHeight, false);
 
 
 
 
+
+
+
+
+
+//projects scene
+const projectsScene = new THREE.Scene();
+
+const aspect = window.innerWidth / window.innerHeight;
+const frustumSize = 30;
+const projectsCamera = new THREE.OrthographicCamera(
+  frustumSize * aspect / -2, 
+  frustumSize * aspect / 2, 
+  frustumSize / 2, 
+  frustumSize / -2, 
+  0.1, 
+  1000
+);
+projectsCamera.position.set(100, 100, 100);
+projectsCamera.lookAt(0, 0, 0);
+const cameraRadius = 100;
+let cameraAngle = -45;
+
+const gridHelper = new THREE.GridHelper( 100, 100, 0xffffff, 0xffffff );
+const gridMesh = new THREE.LineSegments(gridHelper.geometry, new THREE.LineBasicMaterial({ color: 0x555555 }));
+projectsScene.add( gridMesh );
+
+const gridHelper2 = new THREE.GridHelper( 100, 50, 0xffffff, 0xffffff );
+const gridMesh2 = new THREE.LineSegments(gridHelper2.geometry, new THREE.LineBasicMaterial({ color: 0xffffff }));
+projectsScene.add( gridMesh2 );
+
+const rows = 100;
+const columns = 100;
+const planeWidth = 1;
+const planeHeight = 1;
+const xOffset = (columns - 1) * planeWidth / 2;
+const zOffset = (rows - 1) * planeHeight / 2;
+const planeMaterial = new THREE.MeshBasicMaterial({ 
+    color: 0x000000, 
+    side: THREE.DoubleSide 
+});
+
+const planeMesh = new THREE.InstancedMesh(
+    new THREE.PlaneGeometry(planeWidth, planeHeight),
+    planeMaterial,
+    rows * columns
+);
+
+const matrix = new THREE.Matrix4();
+let index = 0;
+for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+        matrix.identity();
+        const x = j * planeWidth - xOffset;
+        const z = i * planeHeight - zOffset;
+        matrix.setPosition(x, -0.01, z);
+        matrix.multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+        planeMesh.setMatrixAt(index, matrix);
+        index++;
+    }
+}
+
+projectsScene.add(planeMesh);
+
+const instanceIds = [];
+const maxCubes = 1000;
+const cubePool = [];
+const framePool = [];
+let nextAvailableIndex = 0;
+
+for (let i = 0; i < maxCubes; i++) {
+    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const cube = new THREE.Mesh(cubeGeometry, new THREE.MeshBasicMaterial({color: 0xffffff}));
+    cube.visible = false;
+    cubePool.push(cube);
+    projectsScene.add(cube);
+
+    const frameGeometry = new THREE.EdgesGeometry(cubeGeometry);
+    const frame = new THREE.LineSegments(frameGeometry, blackMaterial);
+    frame.scale.multiplyScalar(1.03);
+    frame.visible = false;
+    framePool.push(frame);
+    projectsScene.add(frame);
+}
+
+function spawnCube(x, y, z, instanceId) {
+    const cube = cubePool[nextAvailableIndex];
+    const frame = framePool[nextAvailableIndex];
+
+    cube.position.set(x, y, z);
+    cube.visible = true;
+
+    cube.scale.set(0, 0, 0);
+    cube.rotation.set(0, 0, 0);
+
+    const easingFunction = 'circ.inOut'
+    gsap.to(cube.scale, {
+        duration: 1,
+        x: planeWidth,
+        y: planeWidth,
+        z: planeWidth,
+        ease: easingFunction,
+        onUpdate: () => {
+            cube.rotation.y += 0.01;
+        }
+    });
+
+    gsap.to(cube.rotation, {
+        duration: 1,
+        y: Math.PI * 2,
+        ease: easingFunction
+    });
+
+    cube.position.y = cube.position.y + 1;
+    setTimeout(function() {
+        gsap.to(cube.position, {
+            duration: 0.5,
+            y: y,
+            ease: "bounce.out",
+        });
+    }, 1000);
+
+    frame.position.set(x, y, z);
+    frame.visible = true;
+
+    frame.scale.set(0, 0, 0);
+    frame.rotation.set(0, 0, 0);
+
+    gsap.to(frame.scale, {
+        duration: 1,
+        x: planeWidth,
+        y: planeWidth,
+        z: planeWidth,
+        ease: easingFunction,
+        onUpdate: () => {
+            frame.rotation.y += 0.01;
+        }
+    });
+
+    gsap.to(frame.rotation, {
+        duration: 1,
+        y: Math.PI * 2,
+        ease: easingFunction
+    });
+
+    frame.position.y = frame.position.y + 1;
+    setTimeout(function() {
+        gsap.to(frame.position, {
+            duration: 0.5,
+            y: y,
+            ease: "bounce.out",
+        });
+    }, 1000);
+
+    setTimeout(() => {
+        gsap.to(cube.scale, {
+            duration: 1,
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: easingFunction,
+            onUpdate: () => {
+                cube.rotation.y += 0.01;
+            }
+        });
+    
+        gsap.to(cube.rotation, {
+            duration: 1,
+            y: Math.PI * 4,
+            ease: easingFunction
+        });
+
+        gsap.to(frame.scale, {
+            duration: 1,
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: easingFunction,
+            onUpdate: () => {
+                frame.rotation.y += 0.01;
+            }
+        });
+    
+        gsap.to(frame.rotation, {
+            duration: 1,
+            y: Math.PI * 4,
+            ease: easingFunction
+        });
+        setTimeout(() => {
+            cube.visible = false;
+            frame.visible = false;
+            const idIndex = instanceIds.indexOf(instanceId);
+            if (idIndex > -1) {
+                instanceIds.splice(idIndex, 1);
+            }
+        }, 1000);
+    }, 2000);
+
+    nextAvailableIndex = (nextAvailableIndex + 1) % maxCubes;
+}
+
+
+const pointer = new THREE.Vector2();
+const raycaster2 = new THREE.Raycaster();
+
+function projectsRaycaster(e) {
+    pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = - (e.clientY / window.innerHeight) * 2 + 1;
+    raycaster2.setFromCamera(pointer, projectsCamera);
+
+    const intersects = raycaster2.intersectObjects([planeMesh]);
+
+    if (intersects.length > 0) {
+        const intersect = intersects[0];
+        const instanceId = intersect.instanceId;
+        if (!instanceIds.includes(instanceId)) {
+            instanceIds.push(instanceId);
+            const position = new THREE.Vector3();
+            const quaternion = new THREE.Quaternion();
+            const scale = new THREE.Vector3();
+            intersect.object.getMatrixAt(instanceId, matrix);
+            matrix.decompose(position, quaternion, scale);
+
+            spawnCube(position.x, position.y + (planeHeight / 2), position.z, instanceId);
+
+            // const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+            // const cube = new THREE.Mesh(cubeGeometry, blackMaterial);
+
+            // cube.position.set(position.x, position.y + 0.5, position.z);
+
+            // const frame = addFrame(cube, 0.03);
+            // projectsScene.add(frame);
+            // projectsScene.add(cube);
+            // cubes.push(cube);
+        }
+    }
+}
+
+let renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('portfolio') });
+renderer5.setSize(window.innerWidth, window.innerHeight, false);
+
+//website scene
+//#region 
 const websiteScene = new THREE.Scene();
 const websiteCamera = new THREE.PerspectiveCamera(75, 50 / 34, 0.1, 1000);
+websiteCamera.aspect = window.innerWidth / window.innerHeight;
+websiteCamera.updateProjectionMatrix();
 websiteCamera.position.z = 20;
-// controls.update();
 
 const physicsWorld = new CANNON.World({
     gravity: new CANNON.Vec3(0, 0, 0),
 });
-
-// const groundBody = new CANNON.Body({
-//     type: CANNON.Body.STATIC,
-//     shape: new CANNON.Plane(),
-// })
-
-// groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
-// physicsWorld.addBody(groundBody);
-
-
 
 function createStaticPlane(position, rotation, addWireframe) {
     const groundBody = new CANNON.Body({
@@ -224,7 +463,6 @@ createStaticPlane(new THREE.Vector3(0, 50, -25), new THREE.Euler(0, 0, 0), false
 createStaticPlane(new THREE.Vector3(25, 50, 0), new THREE.Euler(0, -Math.PI / 2, 0), false);
 createStaticPlane(new THREE.Vector3(-25, 50, 0), new THREE.Euler(0, Math.PI / 2, 0), false);
 createStaticPlane(new THREE.Vector3(0, -110, 0), new THREE.Euler(-Math.PI / 2, 0, 0), true);
-
 
 const physicsMaterial = new CANNON.Material();
 const physicsContactMaterial = new CANNON.ContactMaterial(
@@ -322,23 +560,7 @@ for (var x = 0; x < numBallsPerSide; x++) {
     }
 }
 
-
-
-let renderer2 = new THREE.WebGLRenderer({ canvas: document.getElementById('home') });
-renderer2.setSize(window.innerWidth, window.innerHeight, false);
-const scene2 = new THREE.Scene();
-const camera2 = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-
-
-let renderer3 = new THREE.WebGLRenderer({ canvas: document.getElementById('about') });
-renderer3.setSize(window.innerWidth, window.innerHeight, false);
-
-let renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('projects') });
-renderer4.setSize(window.innerWidth, window.innerHeight, false);
-
-let renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('portfolio') });
-renderer5.setSize(window.innerWidth, window.innerHeight, false);
+//#endregion
 
 let renderer6 = new THREE.WebGLRenderer({ canvas: document.getElementById('contact') });
 renderer6.setSize(window.innerWidth, window.innerHeight, false);
@@ -370,7 +592,7 @@ window.addEventListener('scroll', function(e) {
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
     var clientHeight = document.documentElement.clientHeight;
 
-    scrolled = (scrollTop / (scrollHeight - clientHeight)) * 100;
+    const scrolled = Math.min(Math.max((scrollTop / (scrollHeight - clientHeight)) * 100, 0), 100);
 
     if (enableCode) {
         if (scrolled >= 0 && scrolled <= 30) {
@@ -387,8 +609,29 @@ window.addEventListener('scroll', function(e) {
             camera.rotation.x = 0;
         }
     } else {
-        websiteCamera.position.y = -scrolled;
-        // updateIntersectionPoint({ clientX: mouse.x, clientY: mouse.y });
+        // console.log("maineIndekso: ", mainIndex)
+        // switch(true) {
+        //     case mainIndex === 0:
+        //         break;
+        //     case mainIndex === 1:
+        //         break;
+        //     case mainIndex === 2:
+        //         break;
+        //     case mainIndex === 3:
+        //         websiteCamera.position.y = -scrolled;
+        //         break;
+        //     case mainIndex === 4:
+        //         break;
+        //     case mainIndex === 5:
+        //         break;
+        //     case mainIndex === 6:
+        //         break;
+        // }
+        websiteCamera.position.y = -scrolled
+
+        cameraAngle = THREE.MathUtils.degToRad(-45 + scrolled * -3.6);
+        projectsCamera.position.set(cameraRadius * Math.cos(cameraAngle), projectsCamera.position.y, cameraRadius * Math.sin(cameraAngle));
+        projectsCamera.lookAt(0, 0, 0);
     }
 });
 
@@ -398,7 +641,7 @@ const raycaster = new THREE.Raycaster();
 const intersectionPoint = new THREE.Vector3();
 const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
 
-function updateIntersectionPoint(e) {
+function websiteRaycaster(e) {
     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, websiteCamera);
@@ -406,7 +649,10 @@ function updateIntersectionPoint(e) {
 }
 
 document.addEventListener('mousemove', function(e) {
-    updateIntersectionPoint(e);
+    if (!enableCode) {
+        if (mainIndex === 2) {projectsRaycaster(e);}
+        if (mainIndex === 3) {websiteRaycaster(e);}
+    }
 });
 // document.addEventListener('onscroll', function(e) {
 //     updateIntersectionPoint(e);
@@ -490,7 +736,7 @@ function animate() {
                             renderer3.render(websiteScene, websiteCamera);
                             break;
                         case mainIndex === 2:
-                            renderer4.render(websiteScene, websiteCamera);
+                            renderer4.render(projectsScene, projectsCamera);
                             break;
                         case mainIndex === 3:
                             renderer5.render(websiteScene, websiteCamera);
@@ -519,7 +765,7 @@ function animate() {
                 activeRenderer.render(websiteScene, websiteCamera);
                 break;
             case mainIndex === 2:
-                activeRenderer.render(websiteScene, websiteCamera);
+                activeRenderer.render(projectsScene, projectsCamera);
                 break;
             case mainIndex === 3:
                 activeRenderer.render(websiteScene, websiteCamera);
@@ -547,7 +793,7 @@ for (let i = 0; i < spheres.length; i++) {
 renderer.render(websiteScene, websiteCamera);
 renderer2.render(websiteScene, websiteCamera);
 renderer3.render(websiteScene, websiteCamera);
-renderer4.render(websiteScene, websiteCamera);
+renderer4.render(projectsScene, projectsCamera);
 renderer5.render(websiteScene, websiteCamera);
 renderer6.render(websiteScene, websiteCamera);
 renderer7.render(websiteScene, websiteCamera);
@@ -559,4 +805,8 @@ window.addEventListener('resize', function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // websiteCamera.aspect = window.innerWidth / window.innerHeight;
+    // websiteCamera.updateProjectionMatrix();
+    // renderer2.setSize(window.innerWidth, window.innerHeight);
 });

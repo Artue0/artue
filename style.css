@@ -765,7 +765,7 @@ h2 {
 
 .websiteText3 {
   margin-top: 20vh;
-  margin-bottom: 150vh;
+  margin-bottom: 150vh !important;
 }
 
 .websiteText p { text-align: left; }
@@ -829,6 +829,7 @@ h2 {
   margin-top: 10vh;
   margin-bottom: 45vh;
   grid-column: 1 / span 9;
+  background-color: none !important;
 }
 
 .projectImages {
@@ -1053,6 +1054,10 @@ h2 {
   background-color: rgba(15, 15, 15, 0.95);
   border-radius: 20px;
   padding: 50px;
+}
+
+.project {
+  background-color: rgba(15, 15, 15, 0);
 }
 
 .see, #about-me, .welcome {
