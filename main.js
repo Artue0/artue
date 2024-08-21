@@ -186,15 +186,8 @@ renderer3.setSize(window.innerWidth, window.innerHeight, false);
 let renderer4 = new THREE.WebGLRenderer({ canvas: document.getElementById('projects') });
 renderer4.setSize(window.innerWidth, window.innerHeight, false);
 
-
-
-
-
-
-
-
-
 //projects scene
+//#region
 const projectsScene = new THREE.Scene();
 
 const aspect = window.innerWidth / window.innerHeight;
@@ -426,6 +419,7 @@ function projectsRaycaster(e) {
         }
     }
 }
+//#endregion
 
 let renderer5 = new THREE.WebGLRenderer({ canvas: document.getElementById('portfolio') });
 renderer5.setSize(window.innerWidth, window.innerHeight, false);
@@ -565,6 +559,168 @@ for (var x = 0; x < numBallsPerSide; x++) {
 let renderer6 = new THREE.WebGLRenderer({ canvas: document.getElementById('contact') });
 renderer6.setSize(window.innerWidth, window.innerHeight, false);
 
+
+
+
+
+
+
+
+//links scene
+//#region 
+const linksScene = new THREE.Scene();
+const linksCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+// const frustumSize2 = 70;
+// const linksCamera = new THREE.OrthographicCamera(
+//     frustumSize2 * aspect / -2, 
+//     frustumSize2 * aspect / 2, 
+//     frustumSize2 / 2, 
+//     frustumSize2 / -2, 
+//     0.1, 
+//     1000
+//   );
+linksCamera.position.z = 70;
+
+// const plane3 = new THREE.Mesh(
+//   new THREE.PlaneGeometry(100, 100),
+//   new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide, transparent: true, opacity: 0 })
+// );
+// plane3.position.z = 60;
+// plane3.lookAt(linksCamera.position);
+// linksScene.add(plane3);
+
+// const raycaster4 = new THREE.Raycaster();
+// const mouse3 = new THREE.Vector2();
+// const intersectedPoints = [];
+
+// const screenWidth = window.innerWidth;
+// const screenHeight = window.innerHeight;
+
+// // Convert pixel coordinates to normalized device coordinates (NDC)
+// function toNDC(x, y) {
+//   const ndcX = (x / screenWidth) * 2 - 1;
+//   const ndcY = 1 - (y / screenHeight) * 2;
+//   return new THREE.Vector2(ndcX, ndcY);
+// }
+
+// // Define the two screen points for raycasting in pixel coordinates
+// const points = [
+//   toNDC(0, 0),              // Top-left corner
+//   toNDC(screenWidth, screenHeight) // Bottom-right corner
+// ];
+
+// function castRays() {
+//   intersectedPoints.length = 0;
+//   points.forEach(point => {
+//     mouse3.set(point.x, point.y);
+//     raycaster4.setFromCamera(mouse3, linksCamera);
+//     const intersects = raycaster4.intersectObject(plane3);
+
+//     if (intersects.length > 0) {
+//         intersectedPoints.push(intersects[0].point);
+//     } else {
+//       console.log('No intersection for point:', point);
+//       intersectedPoints.push(null);
+//     }
+//     console.log(intersectedPoints)
+//   });
+// }
+
+const circles = [];
+const numCircles = 150;
+
+// Create 100 circles with random positions
+for (let i = 0; i < numCircles; i++) {
+    const circleGeometry = new THREE.CircleGeometry(0.2, 32);
+    const randColor = Math.random() * (1 - 0.1) + 0.1;
+    const circleMaterial = new THREE.MeshBasicMaterial({ 
+        color: new THREE.Color(randColor, randColor, randColor),
+        side: THREE.DoubleSide 
+    });
+    const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+    
+    circle.position.x = Math.random() * 180 - 90;
+    circle.position.y = Math.random() * 180 - 90;
+    circle.position.z = Math.random() * 40 - 20;
+    
+    linksScene.add(circle);
+    circles.push(circle);
+}
+
+const mouse2 = new THREE.Vector2();
+const raycaster3 = new THREE.Raycaster();
+const intersectionPoint2 = new THREE.Vector3();
+const plane2 = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+
+const maxRadius = 20;
+
+function linksRaycaster(e) {
+    mouse2.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse2.y = - (e.clientY / window.innerHeight) * 2 + 1;
+    raycaster3.setFromCamera(mouse2, linksCamera);
+    raycaster3.ray.intersectPlane(plane2, intersectionPoint2);
+    // createLines();
+    // castRays();
+}
+
+function getRandomPosition() {
+    const randSide = Math.floor(Math.random() * 4); // Fix Math.random() invocation
+    let x, y, z;
+    switch(randSide) { // Use randSide correctly in the switch case
+        case 0:
+            y = 100;
+            x = Math.random() * 180 - 90;
+            break;
+        case 1:
+            y = Math.random() * 180 - 90;
+            x = 100;
+            break;
+        case 2:
+            y = -100;
+            x = Math.random() * 180 - 90;
+            break;
+        case 3:
+            y = Math.random() * 180 - 90;
+            x = -100;
+            break;
+    }
+    z = Math.random() * 40 - 20;
+    return { x, y, z };
+}
+
+// Function to animate the object to a new random position
+function moveRandomly(circle) {
+    const newTargetPos = getRandomPosition();
+
+    const distance = circle.position.distanceTo(new THREE.Vector3(newTargetPos.x, newTargetPos.y, newTargetPos.z));
+    const moveDuration = distance / (Math.random() * 2); // Adjust speed
+    
+    gsap.to(circle.position, {
+        x: newTargetPos.x,
+        y: newTargetPos.y,
+        z: newTargetPos.z,
+        duration: moveDuration,
+        ease: "power1.inOut",
+        onComplete: () => setTimeout(() => relocate(circle), 500) // Add a delay before relocating
+    });
+}
+
+function relocate(circle) {
+    console.log('relocated');
+    const newStartPos = getRandomPosition();
+    circle.position.set(newStartPos.x, newStartPos.y, newStartPos.z);
+    moveRandomly(circle); // Start the movement again
+}
+
+// Start moving circles
+circles.forEach(circle => moveRandomly(circle));
+//#endregion
+
+
+
+
+
+
 let renderer7 = new THREE.WebGLRenderer({ canvas: document.getElementById('music') });
 renderer7.setSize(window.innerWidth, window.innerHeight, false);
 
@@ -652,6 +808,7 @@ document.addEventListener('mousemove', function(e) {
     if (!enableCode) {
         if (mainIndex === 2) {projectsRaycaster(e);}
         if (mainIndex === 3) {websiteRaycaster(e);}
+        if (mainIndex === 4) {linksRaycaster(e);}
     }
 });
 // document.addEventListener('onscroll', function(e) {
@@ -694,6 +851,33 @@ function animate() {
             polygonsOutlines[i].position.copy(polygonsBodies[i].position);
             polygonsOutlines[i].quaternion.copy(polygonsBodies[i].quaternion);
         }
+
+        circles.forEach(circle => {
+            circle.lookAt(linksCamera.position);
+        });
+
+        const lines = [];
+        linksScene.traverse(object => {
+            if (object.isLine) {
+                lines.push(object);
+            }
+        });
+        lines.forEach(line => linksScene.remove(line));
+
+        // Check each circle and draw a line if it's within the radius
+        circles.forEach(circle => {
+            const distance = intersectionPoint2.distanceTo(circle.position);
+            if (distance <= maxRadius) {
+                // Calculate opacity and color based on distance
+                const opacity = 1 - (distance / maxRadius);
+                const color = new THREE.Color(1, 1, 1).lerp(new THREE.Color(1, 1, 1), opacity);
+                
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints([intersectionPoint2, circle.position]);
+                const lineMaterial = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: opacity });
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                linksScene.add(line);
+            }
+        });
     } 
     if (enableCode && !isMoving) {
         boxes.forEach(boxInfo => {
@@ -712,14 +896,6 @@ function animate() {
 
         renderer.render(scene, camera);
     }
-
-    // if (update) {
-    //     updateRenderers = true;
-    // }
-
-    // if (updateRenderers) {
-    //     updateRenderers = false;
-    // }
 
     if (savedImage !== 0) {
         if (savedImage.classList.contains('reverseFullscreen')) {
@@ -742,7 +918,7 @@ function animate() {
                             renderer5.render(websiteScene, websiteCamera);
                             break;
                         case mainIndex === 4:
-                            renderer6.render(websiteScene, websiteCamera);
+                            renderer6.render(linksScene, linksCamera);
                             break;
                         case mainIndex === 5:
                             renderer7.render(websiteScene, websiteCamera);
@@ -771,7 +947,7 @@ function animate() {
                 activeRenderer.render(websiteScene, websiteCamera);
                 break;
             case mainIndex === 4:
-                activeRenderer.render(websiteScene, websiteCamera);
+                activeRenderer.render(linksScene, linksCamera);
                 break;
             case mainIndex === 5:
                 activeRenderer.render(websiteScene, websiteCamera);
@@ -795,7 +971,7 @@ renderer2.render(websiteScene, websiteCamera);
 renderer3.render(websiteScene, websiteCamera);
 renderer4.render(projectsScene, projectsCamera);
 renderer5.render(websiteScene, websiteCamera);
-renderer6.render(websiteScene, websiteCamera);
+renderer6.render(linksScene, linksCamera);
 renderer7.render(websiteScene, websiteCamera);
 renderer8.render(websiteScene, websiteCamera);
 
